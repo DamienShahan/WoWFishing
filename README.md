@@ -9,7 +9,7 @@ _The real application with sample activity for illustration._
 
 ## Getting started
 
-1. **Open the app.** Extract the entire `WoWFishing-Windows.zip` release, then
+1. **Open the app.** Extract the entire `WoWFishing-Windows.zip`, then
    launch `WoWFishing.exe`. Keep the `_internal` folder beside it. No Python
    installation is needed.
 2. **Prepare WoW.** Stand at a fishing spot and set up one in-game key that
