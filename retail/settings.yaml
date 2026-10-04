@@ -5,7 +5,7 @@ audio:
   min_rms: 0.0001 # absolute amplitude floor, for WAV/PCM scaled to [-1, 1]
 
 detection:
-  mode: waveform # waveform or spectral; compare using evaluate.py
+  mode: spectral # waveform or spectral; compare using evaluate.py
   cooldown_seconds: 1.5 # suppress repeated live listen-only reports
   ambiguity_margin: 0.05 # difference in normalized threshold margins
   spectral_bands: 48
