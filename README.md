@@ -24,6 +24,15 @@ The selected game window is brought to the foreground before each key press.
 Failure to focus it, a closed window, or an audio error stops the run and appears
 in Activity. PyAutoGUI's mouse-corner fail-safe is enabled.
 
+Activity shows the current step above a history of readable cards, with colored
+icons for casts, bites, lure uses, waits, and errors. The newest activity appears
+first; the chevron beside each timestamp expands the full message and diagnostic
+details when needed. Each stopped
+session ends with a summary card showing run time, stop reason, casts, bites
+reeled in, timeouts, interrupted casts, and lure uses. Bite totals are detections
+followed by a reel-in key press, not confirmed catches. **Clear history** keeps
+the current status visible; history retains the most recent 100 cards.
+
 The audio device captures its entire output mix, including other applications;
 selecting a game window does not isolate that game's audio. Each cast gets a
 fresh detector buffer. A bite triggers one reel-in; no detection before the cast
@@ -56,8 +65,9 @@ Use Python 3.11 or 3.12 on Windows, with a root `.venv` already created:
 The script creates a separate `.venv-build`, installs `requirements-build.txt`,
 and runs `WoWFishing.spec`. This avoids collecting unrelated packages from a
 development environment. Output: `dist/WoWFishing/WoWFishing.exe` and
-`dist/WoWFishing-Windows.zip`. Only current target sounds and current code are
-included. Builds are unsigned. Validate a release on another Windows computer
+`dist/WoWFishing-Windows.zip`. Current target sounds, code, and the fishing logo
+in `assets/` are included. The logo appears in the top-left header and is embedded
+as the executable icon. Builds are unsigned. Validate a release on another Windows computer
 before distributing broadly.
 
 ### Verification

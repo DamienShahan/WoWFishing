@@ -1,7 +1,6 @@
 """WoWFishing desktop entry point. The CLI listener remains listen.py."""
 import argparse
 from copy import deepcopy
-from datetime import datetime
 from pathlib import Path
 from queue import Empty, Queue
 import re
@@ -10,7 +9,9 @@ import time
 from tkinter import messagebox
 
 import customtkinter as ctk
+from PIL import Image
 
+from activity import ActivityFeed
 from app_settings import RANGES, load, save, settings_path, validate
 from audio_io import AudioBackend
 from bot import BotSession
@@ -25,12 +26,16 @@ MUTED = "#969bb8"
 GREEN = "#38b64b"
 DEFAULT_AUDIO = "Default Windows output"
 NO_WINDOW = "Open WoW, then refresh"
+ASSETS = Path(__file__).resolve().parent / "assets"
 
 
 class App(ctk.CTk):
     def __init__(self, config_path=None):
         super().__init__()
         self.title("WoWFishing")
+        self.iconbitmap(default=str(ASSETS / "wowfishing.ico"))
+        with Image.open(ASSETS / "wowfishing.png") as image:
+            self.logo = ctk.CTkImage(light_image=image.copy(), size=(64, 64))
         self.geometry("1180x790")
         self.minsize(940, 720)
         self.configure(fg_color=BG)
@@ -57,16 +62,16 @@ class App(ctk.CTk):
         self.after(150, self.initialize)
 
     def initialize(self):
-        self.log("Ready. Choose your game window and audio output, then start.")
-        self.log(f"Settings: {self.path}")
+        self.log("Choose your game window and audio output, then start.", title="Ready to fish", kind="ready",
+                 details=f"Settings file: {self.path}")
         if self.config_error:
-            self.log(f"Settings could not be loaded: {self.config_error}")
-            self.log("Fix the file and restart, or open Settings and save corrected values.")
+            self.log("Open Settings and save corrected values, or fix the file and restart.",
+                     title="Settings need attention", kind="warning", details=self.config_error)
         elif not self.path.exists():
             try:
                 save(self.path, self.settings)
             except OSError as exc:
-                self.log(f"Could not create settings: {exc}")
+                self.log(str(exc), title="Could not create settings", kind="warning")
         self.refresh()
 
     def _build(self):
@@ -74,26 +79,27 @@ class App(ctk.CTk):
         self.grid_rowconfigure(1, weight=1)
         header = ctk.CTkFrame(self, fg_color="transparent")
         header.grid(row=0, column=0, columnspan=2, sticky="ew", padx=24, pady=(22, 18))
-        header.grid_columnconfigure(0, weight=1)
-        ctk.CTkLabel(header, text="WoWFishing", font=("Segoe UI", 23, "bold"), anchor="w").grid(row=0, column=0, sticky="w")
-        ctk.CTkLabel(header, text="Automated fishing assistant", text_color=MUTED, font=("Segoe UI", 12)).grid(row=1, column=0, sticky="w")
+        header.grid_columnconfigure(1, weight=1)
+        ctk.CTkLabel(header, text="", image=self.logo).grid(row=0, column=0, rowspan=2, padx=(0, 14))
+        ctk.CTkLabel(header, text="WoWFishing", font=("Segoe UI", 23, "bold"), anchor="w").grid(row=0, column=1, sticky="w")
+        ctk.CTkLabel(header, text="Automated fishing assistant", text_color=MUTED, font=("Segoe UI", 12)).grid(row=1, column=1, sticky="w")
         self.status = ctk.CTkLabel(header, text="●  Stopped", fg_color=PANEL, corner_radius=16, width=140, height=34, text_color=MUTED)
-        self.status.grid(row=0, column=1, rowspan=2, padx=(12, 0))
+        self.status.grid(row=0, column=2, rowspan=2, padx=(12, 0))
         self.settings_button = ctk.CTkButton(header, text="Settings", width=96, height=34, fg_color=FIELD, hover_color=LINE, command=self.open_settings)
-        self.settings_button.grid(row=0, column=2, rowspan=2, padx=(12, 0))
+        self.settings_button.grid(row=0, column=3, rowspan=2, padx=(12, 0))
 
-        side = ctk.CTkScrollableFrame(self, width=280, fg_color=PANEL, border_color=LINE, border_width=1, corner_radius=14)
+        side = ctk.CTkFrame(self, width=320, fg_color=PANEL, border_color=LINE, border_width=1, corner_radius=14)
         side.grid(row=1, column=0, sticky="nsew", padx=(20, 16), pady=(0, 20))
         side.grid_columnconfigure(0, weight=1)
         self.start_button = ctk.CTkButton(side, text="▶  Start bot", height=46, font=("Segoe UI", 14, "bold"), fg_color=GREEN, hover_color="#2c983d", command=self.toggle)
-        self.start_button.grid(row=0, column=0, sticky="ew", padx=20, pady=(20, 14))
+        self.start_button.grid(row=0, column=0, sticky="ew", padx=20, pady=(20, 10))
         self.caption(side, "UPTIME", 1)
         self.uptime = ctk.CTkLabel(side, text="00:00:00", font=("Consolas", 24, "bold"), anchor="w")
-        self.uptime.grid(row=2, column=0, sticky="ew", padx=20, pady=(0, 12))
+        self.uptime.grid(row=2, column=0, sticky="ew", padx=20)
         self.separator(side, 3)
         self.caption(side, "SCHEDULED RUN TIME", 4)
         self.auto = ctk.BooleanVar(value=self.settings["STOP_AUTOMATICALLY"])
-        self.auto_check = ctk.CTkCheckBox(side, text="Stop automatically", variable=self.auto, command=self.main_changed, checkbox_width=18, checkbox_height=18, font=("Segoe UI", 13))
+        self.auto_check = ctk.CTkCheckBox(side, text="Stop automatically after", variable=self.auto, command=self.main_changed, checkbox_width=18, checkbox_height=18, font=("Segoe UI", 13))
         self.auto_check.grid(row=5, column=0, sticky="w", padx=20, pady=(4, 10))
         timing = ctk.CTkFrame(side, fg_color="transparent")
         timing.grid(row=6, column=0, sticky="ew", padx=20)
@@ -106,12 +112,12 @@ class App(ctk.CTk):
         self.caption(side, "GAME WINDOW", 8)
         self.window_combo = ctk.CTkComboBox(side, values=[NO_WINDOW], width=280, height=36, state="readonly", fg_color=FIELD, border_color=LINE, button_color=LINE, command=self.main_changed)
         self.window_combo.set(NO_WINDOW)
-        self.window_combo.grid(row=9, column=0, sticky="ew", padx=20, pady=(6, 12))
+        self.window_combo.grid(row=9, column=0, sticky="ew", padx=20, pady=(6, 8))
         self.caption(side, "AUDIO OUTPUT", 10)
         self.audio_combo = ctk.CTkComboBox(side, values=[DEFAULT_AUDIO], width=280, height=36, state="readonly", fg_color=FIELD, border_color=LINE, button_color=LINE, command=self.main_changed)
         self.audio_combo.set(DEFAULT_AUDIO)
         self.audio_combo.grid(row=11, column=0, sticky="ew", padx=20, pady=(6, 6))
-        ctk.CTkLabel(side, text="Select the output playing your game audio.", text_color=MUTED, font=("Segoe UI", 11), anchor="w").grid(row=12, column=0, sticky="w", padx=20)
+        ctk.CTkLabel(side, text="Select the output playing your game audio.", height=20, text_color=MUTED, font=("Segoe UI", 11), anchor="w").grid(row=12, column=0, sticky="w", padx=20)
         self.refresh_button = ctk.CTkButton(side, text="↻  Refresh windows & devices", height=36, fg_color=FIELD, hover_color=LINE, command=self.refresh)
         self.refresh_button.grid(row=13, column=0, sticky="ew", padx=20, pady=(10, 0))
         self.separator(side, 14)
@@ -119,45 +125,31 @@ class App(ctk.CTk):
         self.lure_check = ctk.CTkCheckBox(side, text="Use lure", variable=self.lure, command=self.main_changed, checkbox_width=18, checkbox_height=18)
         self.lure_check.grid(row=15, column=0, sticky="w", padx=20, pady=(4, 6))
         self.keys_label = ctk.CTkLabel(side, text="", text_color=MUTED, font=("Segoe UI", 12), anchor="w")
-        self.keys_label.grid(row=16, column=0, sticky="ew", padx=20, pady=(0, 16))
+        self.keys_label.grid(row=16, column=0, sticky="ew", padx=20, pady=(0, 12))
         self.update_keys()
         side.grid_rowconfigure(17, weight=1)
 
-        activity = ctk.CTkFrame(self, fg_color=PANEL, border_color=LINE, border_width=1, corner_radius=14)
-        activity.grid(row=1, column=1, sticky="nsew", padx=(0, 20), pady=(0, 20))
-        activity.grid_columnconfigure(0, weight=1)
-        activity.grid_rowconfigure(1, weight=1)
-        ctk.CTkLabel(activity, text="ACTIVITY", text_color=MUTED, font=("Segoe UI", 11)).grid(row=0, column=0, sticky="w", padx=20, pady=18)
-        ctk.CTkButton(activity, text="Clear", width=76, height=30, fg_color=FIELD, hover_color=LINE, command=self.clear_log).grid(row=0, column=1, padx=20)
-        self.log_box = ctk.CTkTextbox(activity, fg_color=BG, border_width=1, border_color=LINE, corner_radius=8, font=("Consolas", 12), wrap="word", state="disabled")
-        self.log_box.grid(row=1, column=0, columnspan=2, sticky="nsew", padx=20, pady=(0, 20))
+        self.activity = ActivityFeed(self)
+        self.activity.grid(row=1, column=1, sticky="nsew", padx=(0, 20), pady=(0, 20))
         self.controls = [self.auto_check, self.minutes, self.window_combo, self.audio_combo,
                          self.refresh_button, self.lure_check, self.settings_button]
 
     @staticmethod
     def caption(parent, text, row):
-        ctk.CTkLabel(parent, text=text, text_color=MUTED, font=("Segoe UI", 11), anchor="w").grid(row=row, column=0, sticky="w", padx=20, pady=(7, 0))
+        ctk.CTkLabel(parent, text=text, height=20, text_color=MUTED, font=("Segoe UI", 11), anchor="w").grid(row=row, column=0, sticky="w", padx=20, pady=(4, 0))
 
     @staticmethod
     def separator(parent, row):
-        ctk.CTkFrame(parent, fg_color=LINE, height=1, corner_radius=0).grid(row=row, column=0, sticky="ew", padx=20, pady=(16, 8))
+        ctk.CTkFrame(parent, fg_color=LINE, height=1, corner_radius=0).grid(row=row, column=0, sticky="ew", padx=20, pady=(10, 6))
 
     def update_keys(self):
         self.keys_label.configure(text=f"Action: {self.settings['ACTION_KEY'].upper()}    ·    Lure: {self.settings['LURE_KEY'].upper()}")
 
-    def log(self, text):
-        self.log_box.configure(state="normal")
-        self.log_box.insert("end", f"[{datetime.now():%H:%M:%S}] {text}\n")
-        lines = int(self.log_box.index("end-1c").split(".")[0])
-        if lines > 1500:
-            self.log_box.delete("1.0", f"{lines - 1500}.0")
-        self.log_box.see("end")
-        self.log_box.configure(state="disabled")
+    def log(self, text, *, title="Activity update", kind="info", details="", current=True):
+        self.activity.add({"title": title, "body": text, "kind": kind, "details": details, "current": current})
 
     def clear_log(self):
-        self.log_box.configure(state="normal")
-        self.log_box.delete("1.0", "end")
-        self.log_box.configure(state="disabled")
+        self.activity.clear()
 
     def snapshot(self):
         cfg = deepcopy(self.settings)
@@ -179,7 +171,7 @@ class App(ctk.CTk):
         try:
             self.settings = save(self.path, self.snapshot())
         except (ValueError, OSError) as exc:
-            self.log(f"Settings not saved: {exc}")
+            self.log(str(exc), title="Settings not saved", kind="warning")
 
     def refresh(self):
         if self.worker or (self.scanner and self.scanner.is_alive()):
@@ -229,7 +221,7 @@ class App(ctk.CTk):
         self.refresh_button.configure(state="normal", text="↻  Refresh windows & devices")
         self.start_button.configure(state="normal")
         for error in errors:
-            self.log(error)
+            self.log(error, title="Could not refresh devices", kind="warning")
 
     def toggle(self):
         if self.worker:
@@ -254,6 +246,7 @@ class App(ctk.CTk):
             control.configure(state="disabled")
         self.start_button.configure(text="■  Stop bot", fg_color="#ca505b", hover_color="#a73e48")
         self.status.configure(text="●  Starting", text_color=GREEN)
+        self.activity.set_current("Starting your session", "Preparing to fish…", "start")
         self.worker = Thread(target=self.session.run, name="fishing-worker", daemon=False)
         self.worker.start()
 
@@ -262,6 +255,7 @@ class App(ctk.CTk):
             self.session.stop()
             self.status.configure(text="●  Stopping", text_color=MUTED)
             self.start_button.configure(state="disabled", text="Stopping…")
+            self.activity.set_current("Stopping your session", "Finishing up and releasing the audio device…", "stop")
 
     def poll(self):
         for _ in range(150):
@@ -269,13 +263,17 @@ class App(ctk.CTk):
                 kind, value = self.events.get_nowait()
             except Empty:
                 break
-            if kind == "log":
-                self.log(value)
+            if kind == "activity":
+                if self.session and self.session.stop_event.is_set():
+                    value = dict(value, current=False)
+                self.activity.add(value)
+            elif kind == "summary":
+                self.activity.summary(value)
             elif kind == "state" and self.session and not self.session.stop_event.is_set():
                 self.status.configure(text=f"●  {value}", text_color=GREEN)
             elif kind == "error":
                 self.had_error = True
-                self.log(f"ERROR: {value}")
+                self.log(value, title="Fishing stopped unexpectedly", kind="error")
             elif kind == "discovery":
                 self.discovered(value)
         if self.worker:
@@ -317,6 +315,8 @@ class SettingsDialog(ctk.CTkToplevel):
         super().__init__(app)
         self.app = app
         self.title("WoWFishing · Settings")
+        # CTkToplevel installs its own icon after 200 ms on Windows.
+        self.after(250, lambda: self.iconbitmap(str(ASSETS / "wowfishing.ico")))
         self.geometry("570x690")
         self.minsize(520, 500)
         self.configure(fg_color=BG)
@@ -373,7 +373,7 @@ class SettingsDialog(ctk.CTkToplevel):
             return
         self.app.config_error = None
         self.app.update_keys()
-        self.app.log("Settings saved.")
+        self.app.log("Your changes will be used for the next session.", title="Settings saved", kind="ready", current=False)
         self.destroy()
 
 

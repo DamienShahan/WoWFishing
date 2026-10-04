@@ -65,6 +65,21 @@ class BotTests(unittest.TestCase):
                               keyboard=self.keyboard)
         return self.bot
 
+    def assert_summary(self, *, casts, bites, timeouts=0, interrupted=0, lures=0,
+                       reason="Stopped by user."):
+        logs = [value for kind, value in self.events if kind == "log"]
+        self.assertEqual(sum("Session summary" in line for line in logs), 1)
+        for text in (reason, f"🎣 Casts: {casts}",
+                     f"🐟 Bites reeled in: {bites} (not confirmed catches)",
+                     f"🔇 Casts without a bite (timed out): {timeouts}",
+                     f"⏹️ Interrupted casts: {interrupted}", f"🪱 Lure uses: {lures}"):
+            self.assertTrue(any(text in line for line in logs), text)
+        self.assertEqual(self.events[-1], ("done", None))
+        summaries = [value for kind, value in self.events if kind == "summary"]
+        self.assertEqual(len(summaries), 1)
+        self.assertEqual({key: summaries[0][key] for key in ("casts", "bites", "timeouts", "interrupted", "lures", "reason")},
+                         dict(casts=casts, bites=bites, timeouts=timeouts, interrupted=interrupted, lures=lures, reason=reason))
+
     def test_cast_then_reel_and_fresh_capture_for_each_cast(self):
         bot = self.session()
         waits = []
@@ -83,6 +98,7 @@ class BotTests(unittest.TestCase):
         self.assertEqual(self.stream_factory.call_count, 2)
         self.assertTrue(self.backend.terminated)
         self.assertTrue(all(3 <= n <= 5 for n in waits))
+        self.assert_summary(casts=2, bites=2)
 
     def test_lure_before_first_cast_and_on_interval(self):
         bot = self.session(USE_LURE=True, LURE_COOLDOWN_SECONDS=10)
@@ -99,6 +115,7 @@ class BotTests(unittest.TestCase):
         bot.wait = wait
         bot.run()
         self.assertEqual(self.keys, ["f5", "k", "k", "f5", "k", "k"])
+        self.assert_summary(casts=2, bites=2, lures=2)
 
     def test_stop_during_capture_prevents_reel(self):
         bot = self.session()
@@ -108,6 +125,7 @@ class BotTests(unittest.TestCase):
         self.assertEqual(bot.bites, 0)
         self.stream.process.assert_not_called()
         self.assertEqual(self.backend.closed, 1)
+        self.assert_summary(casts=1, bites=0, interrupted=1)
 
     def test_stop_during_matching_prevents_reel(self):
         bot = self.session()
@@ -118,6 +136,7 @@ class BotTests(unittest.TestCase):
         self.stream.process.side_effect = process
         bot.run()
         self.assertEqual(self.keys, ["k"])
+        self.assert_summary(casts=1, bites=0, interrupted=1)
 
     def test_scheduled_stop_interrupts_long_lure_wait(self):
         bot = self.session(USE_LURE=True, STOP_AUTOMATICALLY=True, STOP_AFTER_MINUTES=.01,
@@ -131,6 +150,7 @@ class BotTests(unittest.TestCase):
             self.fail("Scheduled stop did not interrupt wait")
         self.assertEqual(self.keys, ["f5"])
         self.assertTrue(any("Scheduled" in str(e) for e in self.events))
+        self.assert_summary(casts=0, bites=0, lures=1, reason="Scheduled run time reached.")
 
     def test_timeout_retries_without_reeling(self):
         bot = self.session(LISTEN_DURATION=1)
@@ -148,6 +168,23 @@ class BotTests(unittest.TestCase):
         bot.run()
         self.assertEqual(self.keys, ["k", "k"])
         self.assertEqual(bot.bites, 0)
+        self.assert_summary(casts=2, bites=0, timeouts=2)
+
+    def test_early_wait_wakeup_does_not_resume_before_scheduled_stop(self):
+        bot = self.session()
+        now = [0.]
+        bot.clock = lambda: now[0]
+        bot.deadline = 1.
+
+        def early_wakeup(seconds):
+            now[0] += min(seconds, .4)
+            return False
+
+        with patch.object(bot.stop_event, "wait", side_effect=early_wakeup) as wait:
+            self.assertTrue(bot.wait(30))
+        self.assertGreater(wait.call_count, 1)
+        self.assertEqual(now[0], 1.)
+        self.assertEqual(bot.stop_reason, "Scheduled run time reached.")
 
     def test_capture_failure_closes_resources_and_reports_error(self):
         bot = self.session()
@@ -157,6 +194,7 @@ class BotTests(unittest.TestCase):
         self.assertTrue(self.backend.terminated)
         self.assertIn(("error", "device unplugged"), self.events)
         self.assertEqual(self.events[-1], ("done", None))
+        self.assert_summary(casts=1, bites=0, interrupted=1, reason="Stopped because of an error.")
 
     def test_changed_device_never_sends_keys(self):
         bot = self.session(OUTPUT_DEVICE_INDEX=3, OUTPUT_DEVICE_NAME="Other output")
@@ -169,6 +207,31 @@ class BotTests(unittest.TestCase):
         bot.stop()
         bot.run()
         self.assertFalse(self.keys)
+
+        self.assert_summary(casts=0, bites=0)
+
+    def test_startup_failure_still_emits_zero_summary(self):
+        bot = self.session()
+        bot.detector_factory.side_effect = RuntimeError("Missing sound references")
+        bot.run()
+        self.assert_summary(casts=0, bites=0, reason="Stopped because of an error.")
+        self.assertFalse(self.keys)
+
+    def test_summary_duration_and_manual_stop_reason_survive_cleanup(self):
+        bot = self.session(STOP_AUTOMATICALLY=True, STOP_AFTER_MINUTES=120)
+        now = [100.]
+        bot.clock = lambda: now[0]
+
+        def wait(seconds):
+            now[0] += 3661
+            bot.stop()
+            # A later cancellation must not replace the user's stop reason.
+            bot.stop("Scheduled run time reached.")
+            return True
+        bot.wait = wait
+        bot.run()
+        self.assertIn(("log", "⏱️ Run time: 01:01:01"), self.events)
+        self.assert_summary(casts=1, bites=1)
 
     def test_capture_read_can_be_cancelled_without_audio(self):
         capture = Capture(None, {"defaultSampleRate": 16000, "maxInputChannels": 1}, .1)
