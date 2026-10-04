@@ -1,11 +1,11 @@
 # WoWFishing
 
-A Windows fishing assistant for World of Warcraft. It casts your line, listens
+A Windows fishing assistant for WoW. It casts your line, listens
 for the bite sound, and reels in automatically. You can also apply lures and
 set a time limit for your session.
 
 ![WoWFishing running with the activity log](docs/screenshots/activity.png)
-*The real application with sample activity for illustration.*
+_The real application with sample activity for illustration._
 
 ## Getting started
 
@@ -29,23 +29,23 @@ before starting a run; they are locked while the bot is running.
 
 In the main window:
 
-| Option | What it does |
-| --- | --- |
-| **Game window** | Chooses which WoW window receives key presses. |
-| **Audio output** | Chooses where to listen for bite sounds. |
-| **Stop automatically after** | Ends the session after the number of minutes you enter. |
-| **Use lure** | Applies your lure at the start and reapplies it at the configured interval. Set up a lure macro in WoW first. |
-| **Clear history** | Clears activity cards while keeping the current status visible. |
+| Option                       | What it does                                                                                                  |
+| ---------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| **Game window**              | Chooses which WoW window receives key presses.                                                                |
+| **Audio output**             | Chooses where to listen for bite sounds.                                                                      |
+| **Stop automatically after** | Ends the session after the number of minutes you enter.                                                       |
+| **Use lure**                 | Applies your lure at the start and reapplies it at the configured interval. Set up a lure macro in WoW first. |
+| **Clear history**            | Clears activity cards while keeping the current status visible.                                               |
 
 Open **Settings** for:
 
-| Setting | What it does |
-| --- | --- |
-| **Action key** / **Lure key** | Match your in-game fishing action and lure macro. Defaults: `K` / `F5`. |
-| **After a bite** / **After timeout** | Minimum and maximum pause before the next cast. |
-| **Lure cast wait** / **Lure interval** | How long to wait for a lure to finish, and how often to reapply it. |
-| **Cast timeout** | How long to listen before trying another cast. Default: 23 seconds. |
-| **Detection threshold** | How strong a sound match must be. Start with the default of `0.40`; a higher value requires a stronger match. |
+| Setting                                | What it does                                                                                                  |
+| -------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| **Action key** / **Lure key**          | Match your in-game fishing action and lure macro. Defaults: `K` / `F5`.                                       |
+| **After a bite** / **After timeout**   | Minimum and maximum pause before the next cast.                                                               |
+| **Lure cast wait** / **Lure interval** | How long to wait for a lure to finish, and how often to reapply it.                                           |
+| **Cast timeout**                       | How long to listen before trying another cast. Default: 23 seconds.                                           |
+| **Detection threshold**                | How strong a sound match must be. Start with the default of `0.40`; a higher value requires a stronger match. |
 
 Your choices are saved for the next launch. Packaged releases store settings in
 `%APPDATA%\WoWFishing\settings.yaml`, so they survive replacing the app folder.
@@ -60,8 +60,8 @@ When a session ends, its summary shows the stop reason, run time, casts, fish
 reeled in, timeouts, interrupted casts, and lure uses.
 
 ![WoWFishing session summary with sample totals](docs/screenshots/summary.png)
-*Example summary using sample data. “Fish reeled in” counts detected bites
-followed by a reel-in key press, not confirmed catches.*
+_Example summary using sample data. “Fish reeled in” counts detected bites
+followed by a reel-in key press, not confirmed catches._
 
 ## If something is not working
 
