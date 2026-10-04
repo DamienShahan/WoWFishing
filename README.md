@@ -43,8 +43,18 @@ window. You can skip this macro when **Use lure** is off.
    stand at a fishing spot, and make sure the game sound is audible.
 3. **Choose your window and audio.** Select your WoW window and the audio output
    playing the game. Use **Refresh windows & devices** if either is missing.
+
+   ![Game window and audio output selectors, with the Refresh windows & devices button](docs/screenshots/window-and-audio.png)
+
+   _Find these controls in the left-hand panel before starting the bot._
+
 4. **Set your key.** Open **Settings**, enter the same **Action key** you bound
    in WoW, and click **Save settings**. The app does not create game bindings.
+
+   ![Settings dialog showing Action key, Lure key, timing options, and Save settings](docs/screenshots/settings.png)
+
+   _Match the Action key to your Better Fishing binding; set the Lure key if you use a lure macro._
+
 5. **Start fishing.** Click **Start bot** and watch the first few casts.
    Click **Stop bot** or close the app to end the session.
 
