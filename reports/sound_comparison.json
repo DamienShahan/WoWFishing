@@ -1,0 +1,392 @@
+{
+  "method": "8 kHz mono, 250-3000 Hz bandpass; normalized correlation with lag and speed search",
+  "speed_search_range": [
+    0.88,
+    1.12
+  ],
+  "verification": "At least 70% of shorter duration and 70% of each clip's energy overlap",
+  "limitations": "Empirical recording similarity, not proof of original game asset identities. Correlations are not probabilities.",
+  "groups": [
+    [
+      "bite1.wav",
+      "bite5.wav",
+      "bite9.wav"
+    ],
+    [
+      "bite2.wav",
+      "bite3.wav",
+      "bite6.wav",
+      "bite8.wav"
+    ],
+    [
+      "bite4.wav",
+      "bite7.wav"
+    ]
+  ],
+  "pairs": [
+    {
+      "a": "bite1.wav",
+      "b": "bite2.wav",
+      "unadjusted_correlation": 0.05884235663986353,
+      "best_excerpt_correlation": 0.16341343779657166,
+      "speed_multiplier_a_to_b": 1.0670000000000002,
+      "long_overlap_verification": null,
+      "likely_same_recorded_effect": false
+    },
+    {
+      "a": "bite1.wav",
+      "b": "bite3.wav",
+      "unadjusted_correlation": 0.05850298285102118,
+      "best_excerpt_correlation": 0.15938367686296848,
+      "speed_multiplier_a_to_b": 0.888,
+      "long_overlap_verification": null,
+      "likely_same_recorded_effect": false
+    },
+    {
+      "a": "bite1.wav",
+      "b": "bite4.wav",
+      "unadjusted_correlation": 0.07547902074255057,
+      "best_excerpt_correlation": 0.16567476645018597,
+      "speed_multiplier_a_to_b": 1.0380000000000003,
+      "long_overlap_verification": null,
+      "likely_same_recorded_effect": false
+    },
+    {
+      "a": "bite1.wav",
+      "b": "bite5.wav",
+      "unadjusted_correlation": 0.09988983392504523,
+      "best_excerpt_correlation": 0.9508111605337145,
+      "speed_multiplier_a_to_b": 0.9865750000000024,
+      "long_overlap_verification": {
+        "correlation": 0.9758459145549943,
+        "overlap_seconds": 1.732375,
+        "lag_seconds": 0.121625
+      },
+      "likely_same_recorded_effect": true
+    },
+    {
+      "a": "bite1.wav",
+      "b": "bite6.wav",
+      "unadjusted_correlation": 0.05652525660960539,
+      "best_excerpt_correlation": 0.16329570586682593,
+      "speed_multiplier_a_to_b": 1.092,
+      "long_overlap_verification": null,
+      "likely_same_recorded_effect": false
+    },
+    {
+      "a": "bite1.wav",
+      "b": "bite7.wav",
+      "unadjusted_correlation": 0.05435425674228854,
+      "best_excerpt_correlation": 0.18265593213185508,
+      "speed_multiplier_a_to_b": 0.91,
+      "long_overlap_verification": null,
+      "likely_same_recorded_effect": false
+    },
+    {
+      "a": "bite1.wav",
+      "b": "bite8.wav",
+      "unadjusted_correlation": 0.0684178891595054,
+      "best_excerpt_correlation": 0.16220629941813422,
+      "speed_multiplier_a_to_b": 0.9630000000000001,
+      "long_overlap_verification": null,
+      "likely_same_recorded_effect": false
+    },
+    {
+      "a": "bite1.wav",
+      "b": "bite9.wav",
+      "unadjusted_correlation": 0.10799282475079434,
+      "best_excerpt_correlation": 0.9206254387583739,
+      "speed_multiplier_a_to_b": 1.0066999999999973,
+      "long_overlap_verification": {
+        "correlation": 0.9800432564781135,
+        "overlap_seconds": 1.618375,
+        "lag_seconds": 0.07875
+      },
+      "likely_same_recorded_effect": true
+    },
+    {
+      "a": "bite2.wav",
+      "b": "bite3.wav",
+      "unadjusted_correlation": 0.05974499334999852,
+      "best_excerpt_correlation": 0.87857944045944,
+      "speed_multiplier_a_to_b": 0.9776750000000047,
+      "long_overlap_verification": {
+        "correlation": 0.9826503118481293,
+        "overlap_seconds": 1.956,
+        "lag_seconds": 0.015375
+      },
+      "likely_same_recorded_effect": true
+    },
+    {
+      "a": "bite2.wav",
+      "b": "bite4.wav",
+      "unadjusted_correlation": 0.06203625352512876,
+      "best_excerpt_correlation": 0.15903210781961719,
+      "speed_multiplier_a_to_b": 0.9680000000000001,
+      "long_overlap_verification": null,
+      "likely_same_recorded_effect": false
+    },
+    {
+      "a": "bite2.wav",
+      "b": "bite5.wav",
+      "unadjusted_correlation": 0.05145935070048938,
+      "best_excerpt_correlation": 0.1570969464146371,
+      "speed_multiplier_a_to_b": 1.048,
+      "long_overlap_verification": null,
+      "likely_same_recorded_effect": false
+    },
+    {
+      "a": "bite2.wav",
+      "b": "bite6.wav",
+      "unadjusted_correlation": 0.06554984451532161,
+      "best_excerpt_correlation": 0.9295121021420004,
+      "speed_multiplier_a_to_b": 0.9625000000000022,
+      "long_overlap_verification": {
+        "correlation": 0.9729186341696433,
+        "overlap_seconds": 1.98525,
+        "lag_seconds": 0.037625
+      },
+      "likely_same_recorded_effect": true
+    },
+    {
+      "a": "bite2.wav",
+      "b": "bite7.wav",
+      "unadjusted_correlation": 0.05477605001540717,
+      "best_excerpt_correlation": 0.16885844292504076,
+      "speed_multiplier_a_to_b": 0.915,
+      "long_overlap_verification": null,
+      "likely_same_recorded_effect": false
+    },
+    {
+      "a": "bite2.wav",
+      "b": "bite8.wav",
+      "unadjusted_correlation": 0.0723731386162419,
+      "best_excerpt_correlation": 0.9785064494677386,
+      "speed_multiplier_a_to_b": 1.0598749999999968,
+      "long_overlap_verification": {
+        "correlation": 0.9774338250151785,
+        "overlap_seconds": 1.822875,
+        "lag_seconds": 0.01425
+      },
+      "likely_same_recorded_effect": true
+    },
+    {
+      "a": "bite2.wav",
+      "b": "bite9.wav",
+      "unadjusted_correlation": 0.058546186549996715,
+      "best_excerpt_correlation": 0.16465299225313906,
+      "speed_multiplier_a_to_b": 1.0670000000000002,
+      "long_overlap_verification": null,
+      "likely_same_recorded_effect": false
+    },
+    {
+      "a": "bite3.wav",
+      "b": "bite4.wav",
+      "unadjusted_correlation": 0.05443225447643279,
+      "best_excerpt_correlation": 0.16625543689399686,
+      "speed_multiplier_a_to_b": 0.903,
+      "long_overlap_verification": null,
+      "likely_same_recorded_effect": false
+    },
+    {
+      "a": "bite3.wav",
+      "b": "bite5.wav",
+      "unadjusted_correlation": 0.06186407023939915,
+      "best_excerpt_correlation": 0.15938717394552895,
+      "speed_multiplier_a_to_b": 0.893,
+      "long_overlap_verification": null,
+      "likely_same_recorded_effect": false
+    },
+    {
+      "a": "bite3.wav",
+      "b": "bite6.wav",
+      "unadjusted_correlation": 0.06389143682860998,
+      "best_excerpt_correlation": 0.9002332210458172,
+      "speed_multiplier_a_to_b": 0.9845000000000023,
+      "long_overlap_verification": {
+        "correlation": 0.9610169431873439,
+        "overlap_seconds": 1.96475,
+        "lag_seconds": 0.022
+      },
+      "likely_same_recorded_effect": true
+    },
+    {
+      "a": "bite3.wav",
+      "b": "bite7.wav",
+      "unadjusted_correlation": 0.06833033524202484,
+      "best_excerpt_correlation": 0.1626954080507284,
+      "speed_multiplier_a_to_b": 0.9630000000000001,
+      "long_overlap_verification": null,
+      "likely_same_recorded_effect": false
+    },
+    {
+      "a": "bite3.wav",
+      "b": "bite8.wav",
+      "unadjusted_correlation": 0.06294218866558376,
+      "best_excerpt_correlation": 0.9789644776747255,
+      "speed_multiplier_a_to_b": 1.0840249999999965,
+      "long_overlap_verification": {
+        "correlation": 0.9794795619335376,
+        "overlap_seconds": 1.80425,
+        "lag_seconds": 0.000125
+      },
+      "likely_same_recorded_effect": true
+    },
+    {
+      "a": "bite3.wav",
+      "b": "bite9.wav",
+      "unadjusted_correlation": 0.053643591096681355,
+      "best_excerpt_correlation": 0.16010376506558,
+      "speed_multiplier_a_to_b": 1.092,
+      "long_overlap_verification": null,
+      "likely_same_recorded_effect": false
+    },
+    {
+      "a": "bite4.wav",
+      "b": "bite5.wav",
+      "unadjusted_correlation": 0.058666083645557233,
+      "best_excerpt_correlation": 0.16135322493933713,
+      "speed_multiplier_a_to_b": 1.0050000000000001,
+      "long_overlap_verification": null,
+      "likely_same_recorded_effect": false
+    },
+    {
+      "a": "bite4.wav",
+      "b": "bite6.wav",
+      "unadjusted_correlation": 0.060760218682755364,
+      "best_excerpt_correlation": 0.16182629719879027,
+      "speed_multiplier_a_to_b": 1.028,
+      "long_overlap_verification": null,
+      "likely_same_recorded_effect": false
+    },
+    {
+      "a": "bite4.wav",
+      "b": "bite7.wav",
+      "unadjusted_correlation": 0.05827937861025197,
+      "best_excerpt_correlation": 0.9629206550157123,
+      "speed_multiplier_a_to_b": 1.0665749999999976,
+      "long_overlap_verification": {
+        "correlation": 0.9774001657381365,
+        "overlap_seconds": 1.85925,
+        "lag_seconds": 0.022625
+      },
+      "likely_same_recorded_effect": true
+    },
+    {
+      "a": "bite4.wav",
+      "b": "bite8.wav",
+      "unadjusted_correlation": 0.051193728110755676,
+      "best_excerpt_correlation": 0.15137935938605213,
+      "speed_multiplier_a_to_b": 1.0510000000000002,
+      "long_overlap_verification": null,
+      "likely_same_recorded_effect": false
+    },
+    {
+      "a": "bite4.wav",
+      "b": "bite9.wav",
+      "unadjusted_correlation": 0.06128634318211645,
+      "best_excerpt_correlation": 0.15726596754649566,
+      "speed_multiplier_a_to_b": 1.0260000000000002,
+      "long_overlap_verification": null,
+      "likely_same_recorded_effect": false
+    },
+    {
+      "a": "bite5.wav",
+      "b": "bite6.wav",
+      "unadjusted_correlation": 0.06475759600946665,
+      "best_excerpt_correlation": 0.16428899596330834,
+      "speed_multiplier_a_to_b": 1.072,
+      "long_overlap_verification": null,
+      "likely_same_recorded_effect": false
+    },
+    {
+      "a": "bite5.wav",
+      "b": "bite7.wav",
+      "unadjusted_correlation": 0.06714075754109877,
+      "best_excerpt_correlation": 0.17852236431837207,
+      "speed_multiplier_a_to_b": 0.923,
+      "long_overlap_verification": null,
+      "likely_same_recorded_effect": false
+    },
+    {
+      "a": "bite5.wav",
+      "b": "bite8.wav",
+      "unadjusted_correlation": 0.07169560532844604,
+      "best_excerpt_correlation": 0.16358354087730148,
+      "speed_multiplier_a_to_b": 0.9760000000000001,
+      "long_overlap_verification": null,
+      "likely_same_recorded_effect": false
+    },
+    {
+      "a": "bite5.wav",
+      "b": "bite9.wav",
+      "unadjusted_correlation": 0.07735717783539639,
+      "best_excerpt_correlation": 0.950909969652619,
+      "speed_multiplier_a_to_b": 1.0204749999999954,
+      "long_overlap_verification": {
+        "correlation": 0.9817954746649125,
+        "overlap_seconds": 1.577875,
+        "lag_seconds": -0.0405
+      },
+      "likely_same_recorded_effect": true
+    },
+    {
+      "a": "bite6.wav",
+      "b": "bite7.wav",
+      "unadjusted_correlation": 0.059301688250736354,
+      "best_excerpt_correlation": 0.17320611497964208,
+      "speed_multiplier_a_to_b": 0.9500000000000001,
+      "long_overlap_verification": null,
+      "likely_same_recorded_effect": false
+    },
+    {
+      "a": "bite6.wav",
+      "b": "bite8.wav",
+      "unadjusted_correlation": 0.061555024272880315,
+      "best_excerpt_correlation": 0.8820359282313389,
+      "speed_multiplier_a_to_b": 1.1011249999999964,
+      "long_overlap_verification": {
+        "correlation": 0.9639376425896035,
+        "overlap_seconds": 1.82125,
+        "lag_seconds": -0.019875
+      },
+      "likely_same_recorded_effect": true
+    },
+    {
+      "a": "bite6.wav",
+      "b": "bite9.wav",
+      "unadjusted_correlation": 0.05911974329064263,
+      "best_excerpt_correlation": 0.16348876539460303,
+      "speed_multiplier_a_to_b": 1.1,
+      "long_overlap_verification": null,
+      "likely_same_recorded_effect": false
+    },
+    {
+      "a": "bite7.wav",
+      "b": "bite8.wav",
+      "unadjusted_correlation": 0.05997566773227581,
+      "best_excerpt_correlation": 0.15670806649517752,
+      "speed_multiplier_a_to_b": 0.9410000000000001,
+      "long_overlap_verification": null,
+      "likely_same_recorded_effect": false
+    },
+    {
+      "a": "bite7.wav",
+      "b": "bite9.wav",
+      "unadjusted_correlation": 0.05333784839564947,
+      "best_excerpt_correlation": 0.1591367246817128,
+      "speed_multiplier_a_to_b": 1.0650000000000002,
+      "long_overlap_verification": null,
+      "likely_same_recorded_effect": false
+    },
+    {
+      "a": "bite8.wav",
+      "b": "bite9.wav",
+      "unadjusted_correlation": 0.07574651436857013,
+      "best_excerpt_correlation": 0.16717082904129416,
+      "speed_multiplier_a_to_b": 1.0070000000000001,
+      "long_overlap_verification": null,
+      "likely_same_recorded_effect": false
+    }
+  ]
+}

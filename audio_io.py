@@ -20,7 +20,7 @@ class AudioBackend:
     def device(self, index=None):
         info = self.p.get_default_wasapi_loopback() if index is None else self.p.get_device_info_by_index(index)
         if not info.get("isLoopbackDevice") or info["maxInputChannels"] < 1:
-            raise ValueError("Select a WASAPI loopback device from list_devices.py")
+            raise ValueError("Select a WASAPI loopback device using listen.py --list-devices")
         return info
 
     def capture(self, device, chunk_seconds):

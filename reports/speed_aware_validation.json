@@ -1,0 +1,249 @@
+{
+  "reference_files": [
+    "bite1.wav",
+    "bite2.wav",
+    "bite4.wav"
+  ],
+  "threshold": 0.4,
+  "speed_range": [
+    0.88,
+    1.12
+  ],
+  "scope": "Offline streaming of supplied recordings; not a live false-positive estimate.",
+  "runs": [
+    {
+      "file": "bite1.wav",
+      "reference_duration_limit": null,
+      "events": [
+        {
+          "reference": "bite1.wav",
+          "score": 0.5571428571428572,
+          "speed": 1.03,
+          "detection_seconds": 1.6
+        }
+      ],
+      "processing_p95_ms": 37.05500499936534
+    },
+    {
+      "file": "bite2.wav",
+      "reference_duration_limit": null,
+      "events": [
+        {
+          "reference": "bite2.wav",
+          "score": 0.6685714285714286,
+          "speed": 1.01,
+          "detection_seconds": 1.9
+        }
+      ],
+      "processing_p95_ms": 35.841925000841
+    },
+    {
+      "file": "bite3.wav",
+      "reference_duration_limit": null,
+      "events": [
+        {
+          "reference": "bite2.wav",
+          "score": 0.5142857142857142,
+          "speed": 1.01,
+          "detection_seconds": 1.9
+        }
+      ],
+      "processing_p95_ms": 35.754829999495996
+    },
+    {
+      "file": "bite4.wav",
+      "reference_duration_limit": null,
+      "events": [
+        {
+          "reference": "bite4.wav",
+          "score": 0.4607329842931937,
+          "speed": 1.04,
+          "detection_seconds": 1.9
+        }
+      ],
+      "processing_p95_ms": 47.418670000115526
+    },
+    {
+      "file": "bite5.wav",
+      "reference_duration_limit": null,
+      "events": [
+        {
+          "reference": "bite1.wav",
+          "score": 0.5571428571428572,
+          "speed": 1.01,
+          "detection_seconds": 1.5
+        }
+      ],
+      "processing_p95_ms": 32.903184999759105
+    },
+    {
+      "file": "bite6.wav",
+      "reference_duration_limit": null,
+      "events": [
+        {
+          "reference": "bite2.wav",
+          "score": 0.4114285714285714,
+          "speed": 0.99,
+          "detection_seconds": 1.9
+        }
+      ],
+      "processing_p95_ms": 38.51805000049353
+    },
+    {
+      "file": "bite7.wav",
+      "reference_duration_limit": null,
+      "events": [
+        {
+          "reference": "bite4.wav",
+          "score": 0.6178010471204188,
+          "speed": 1.08,
+          "detection_seconds": 1.8
+        }
+      ],
+      "processing_p95_ms": 40.073320000010426
+    },
+    {
+      "file": "bite8.wav",
+      "reference_duration_limit": null,
+      "events": [
+        {
+          "reference": "bite2.wav",
+          "score": 0.7142857142857143,
+          "speed": 1.06,
+          "detection_seconds": 1.8
+        }
+      ],
+      "processing_p95_ms": 36.9865400013623
+    },
+    {
+      "file": "bite9.wav",
+      "reference_duration_limit": null,
+      "events": [
+        {
+          "reference": "bite1.wav",
+          "score": 0.4928571428571429,
+          "speed": 1.05,
+          "detection_seconds": 1.5
+        }
+      ],
+      "processing_p95_ms": 29.432129998895107
+    },
+    {
+      "file": "bite1.wav",
+      "reference_duration_limit": 1.0,
+      "events": [
+        {
+          "reference": "bite1.wav",
+          "score": 0.6593406593406593,
+          "speed": 0.99,
+          "detection_seconds": 1.1
+        }
+      ],
+      "processing_p95_ms": 45.716675000494426
+    },
+    {
+      "file": "bite2.wav",
+      "reference_duration_limit": 1.0,
+      "events": [
+        {
+          "reference": "bite2.wav",
+          "score": 0.6521739130434783,
+          "speed": 1.0,
+          "detection_seconds": 1.0
+        }
+      ],
+      "processing_p95_ms": 28.03763999891089
+    },
+    {
+      "file": "bite3.wav",
+      "reference_duration_limit": 1.0,
+      "events": [
+        {
+          "reference": "bite2.wav",
+          "score": 0.6521739130434783,
+          "speed": 0.98,
+          "detection_seconds": 1.0
+        }
+      ],
+      "processing_p95_ms": 28.435364999586454
+    },
+    {
+      "file": "bite4.wav",
+      "reference_duration_limit": 1.0,
+      "events": [
+        {
+          "reference": "bite4.wav",
+          "score": 1.0,
+          "speed": 0.99,
+          "detection_seconds": 1.0
+        }
+      ],
+      "processing_p95_ms": 33.6430700002893
+    },
+    {
+      "file": "bite5.wav",
+      "reference_duration_limit": 1.0,
+      "events": [
+        {
+          "reference": "bite1.wav",
+          "score": 0.6813186813186813,
+          "speed": 0.99,
+          "detection_seconds": 1.0
+        }
+      ],
+      "processing_p95_ms": 28.739584999220824
+    },
+    {
+      "file": "bite6.wav",
+      "reference_duration_limit": 1.0,
+      "events": [
+        {
+          "reference": "bite2.wav",
+          "score": 0.5978260869565217,
+          "speed": 0.9600000000000001,
+          "detection_seconds": 1.0
+        }
+      ],
+      "processing_p95_ms": 28.741770000306133
+    },
+    {
+      "file": "bite7.wav",
+      "reference_duration_limit": 1.0,
+      "events": [
+        {
+          "reference": "bite4.wav",
+          "score": 0.6931818181818182,
+          "speed": 1.08,
+          "detection_seconds": 0.9
+        }
+      ],
+      "processing_p95_ms": 29.46392499979993
+    },
+    {
+      "file": "bite8.wav",
+      "reference_duration_limit": 1.0,
+      "events": [
+        {
+          "reference": "bite2.wav",
+          "score": 0.5543478260869565,
+          "speed": 1.08,
+          "detection_seconds": 0.9
+        }
+      ],
+      "processing_p95_ms": 28.050205000545247
+    },
+    {
+      "file": "bite9.wav",
+      "reference_duration_limit": 1.0,
+      "events": [
+        {
+          "reference": "bite1.wav",
+          "score": 0.6593406593406593,
+          "speed": 1.0,
+          "detection_seconds": 1.0
+        }
+      ],
+      "processing_p95_ms": 28.214259999913338
+    }
+  ]
+}
