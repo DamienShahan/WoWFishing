@@ -1,5 +1,6 @@
 """Windows WASAPI loopback capture with bounded buffering and explicit errors."""
 from queue import Empty, Full, Queue
+import time
 
 import numpy as np
 
@@ -59,15 +60,23 @@ class Capture:
         )
         return self
 
-    def read(self, timeout=3):
+    def read(self, timeout=3, stop_event=None):
         if self.error:
             raise self.error
-        try:
-            data = self.queue.get(timeout=timeout)
-        except Empty as exc:
+        deadline = time.monotonic() + timeout
+        while True:
+            if stop_event is not None and stop_event.is_set():
+                raise InterruptedError("Capture stopped")
             if self.error:
                 raise self.error
-            raise RuntimeError("No loopback audio received for 3 seconds; check output device and game audio") from exc
+            remaining = deadline - time.monotonic()
+            if remaining <= 0:
+                raise RuntimeError(f"No loopback audio received for {timeout:g} seconds; check output device and game audio")
+            try:
+                data = self.queue.get(timeout=min(.1, remaining))
+                break
+            except Empty:
+                continue
         if self.error:
             raise self.error
         return np.frombuffer(data, dtype=np.int16).reshape(-1, self.channels).astype(np.float64) / 32768

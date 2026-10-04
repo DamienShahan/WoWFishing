@@ -1,4 +1,76 @@
-# Bite fingerprint experiment
+# WoWFishing
+
+A Windows GUI for the current audio fingerprint detector, with automated casting,
+reeling in, optional lure application, and a scheduled stop. The `classic/` folder
+is the old implementation and is not imported or bundled by this application.
+
+## Desktop application
+
+For a packaged release, extract **all** of `dist/WoWFishing-Windows.zip`, then
+double-click `WoWFishing.exe` inside the extracted folder. Keep `_internal`
+beside the executable. Python and terminal commands are not needed by end users.
+
+Select the WoW window and the audio output carrying the game sound. In **Settings**,
+set the action key to the in-game binding that both casts and reels in (for example,
+the Better Fishing action binding). The app does not configure your game bindings.
+Set the lure key to your lure macro, and enable **Use lure** if desired. Configure
+wait ranges, lure interval, cast timeout, and detection threshold in Settings.
+
+**Start bot** begins casting; **Stop bot**, closing the window, or the optional
+run-time limit stops it. Settings are locked during a run. The worker checks
+cancellation before key presses and during waits/capture, and releases the audio
+device on exit. An ongoing detector calculation must finish before cleanup.
+The selected game window is brought to the foreground before each key press.
+Failure to focus it, a closed window, or an audio error stops the run and appears
+in Activity. PyAutoGUI's mouse-corner fail-safe is enabled.
+
+The audio device captures its entire output mix, including other applications;
+selecting a game window does not isolate that game's audio. Each cast gets a
+fresh detector buffer. A bite triggers one reel-in; no detection before the cast
+timeout triggers a retry. There is currently **no out-of-range sound detector**.
+Detection totals count matches, not confirmed catches. Test the provisional
+threshold against real gameplay; the GUI does not improve detection accuracy.
+
+Selections and settings persist in `settings.yaml` beside the source when running
+from Python. Packaged builds create `%APPDATA%/WoWFishing/settings.yaml` on first
+launch so the application folder can be read-only. `gui.py --settings PATH` (or
+the executable with the same option) overrides this location. Invalid settings
+are reported and preserved until corrected. Sound references are bundled resources;
+user settings are stored separately and survive replacing the application folder.
+
+### Run from source
+
+```powershell
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt
+.\.venv\Scripts\python.exe gui.py
+```
+
+### Build the Windows release
+
+Use Python 3.11 or 3.12 on Windows, with a root `.venv` already created:
+
+```powershell
+.\build.ps1
+```
+
+The script creates a separate `.venv-build`, installs `requirements-build.txt`,
+and runs `WoWFishing.spec`. This avoids collecting unrelated packages from a
+development environment. Output: `dist/WoWFishing/WoWFishing.exe` and
+`dist/WoWFishing-Windows.zip`. Only current target sounds and current code are
+included. Builds are unsigned. Validate a release on another Windows computer
+before distributing broadly.
+
+### Verification
+
+```powershell
+.\.venv\Scripts\python.exe -m unittest discover -s . -p "test_*.py" -v
+```
+
+Controller tests use fake audio and keyboard input; they do not send keys to WoW.
+They cover cast/reel sequencing, lure scheduling, retries, cancellation, resource
+cleanup, automatic stopping, settings validation, and foreground checks.
+
+## Console bite fingerprint experiment
 
 This script listens to Windows output audio and prints `BITE` when it finds an
 aligned landmark pattern from `sounds/target/bite1.wav`,
