@@ -1,0 +1,24 @@
+WoWFishing for Windows
+
+1. Extract the entire ZIP folder. Keep WoWFishing.exe and _internal together.
+2. Open WoW and make sure your fishing action is bound to a key that both casts
+   and reels in (for example your Better Fishing action binding).
+3. Double-click WoWFishing.exe. Select your game window and audio output.
+4. Open Settings and enter that Action key. If using a lure, bind an in-game
+   lure macro and set the Lure key. Enable Use lure in the main window.
+5. Optionally enable Stop automatically and set the number of minutes.
+6. Click Start bot. Stop bot or closing the window ends the session.
+
+The app brings the selected game window forward before sending keys. Keep WoW
+available; if Windows refuses focus or the window closes, the app stops and
+shows the error in Activity. Moving the mouse to a screen corner activates
+PyAutoGUI's fail-safe at the next keypress.
+
+Audio capture listens to the entire selected output, including other apps.
+The match threshold is experimental. Watch the first few casts and adjust in
+Settings if necessary. A detection count is not a confirmed catch count.
+This version detects bites; an unsuccessful cast retries after the timeout.
+
+Settings are saved automatically to:
+  %APPDATA%\WoWFishing\settings.yaml
+No Python installation or command-line setup is required for the packaged app.
