@@ -7,14 +7,40 @@ set a time limit for your session.
 ![WoWFishing running with the activity log](docs/screenshots/activity.png)
 _The real application with sample activity for illustration._
 
+## Game prerequisites
+
+### Better Fishing addon
+
+Install and enable [Better Fishing](https://www.curseforge.com/wow/addons/better-fishing).
+In WoW, go to **Settings → Keybindings → Better Fishing → Cast and Interact**
+and bind a key, such as `K`. This lets the same key cast and reel in.
+Set WoWFishing's **Action key** to that same key.
+
+### Lure macro (optional)
+
+If you want to enable **Use lure**, create this in-game macro with `/macro`:
+
+```lua
+#showtooltip
+/use [item:6532] Bright Baubles
+/use 16
+```
+
+This example uses **Bright Baubles** from your bags and applies it to the
+main-hand weapon slot (`16`). Have the lure in your bags and your fishing pole
+equipped in that slot. Adjust the macro if you use a different lure or equipment slot.
+
+Place the macro on an action bar and bind it to a key, such as `F5`. Set
+WoWFishing's **Lure key** to the same key, then enable **Use lure** in the main
+window. You can skip this macro when **Use lure** is off.
+
 ## Getting started
 
 1. **Open the app.** Extract the entire `WoWFishing-Windows.zip`, then
    launch `WoWFishing.exe`. Keep the `_internal` folder beside it. No Python
    installation is needed.
-2. **Prepare WoW.** Stand at a fishing spot and set up one in-game key that
-   both casts and reels in, such as the Better Fishing action binding.
-   Make sure the game sound is audible.
+2. **Prepare WoW.** Complete the [game prerequisites](#game-prerequisites),
+   stand at a fishing spot, and make sure the game sound is audible.
 3. **Choose your window and audio.** Select your WoW window and the audio output
    playing the game. Use **Refresh windows & devices** if either is missing.
 4. **Set your key.** Open **Settings**, enter the same **Action key** you bound
