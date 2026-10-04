@@ -53,6 +53,10 @@ class StreamingTests(unittest.TestCase):
         self.root = Path(self.directory.name)
         self.rate = 8000
         self.cfg = load_config()
+        # These waveform regressions must not depend on the user's selected mode.
+        self.cfg["detection"]["mode"] = "waveform"
+        self.cfg["events"]["target"]["waveform_threshold"] = 0.65
+        self.cfg["events"]["target"]["spectral_threshold"] = 0.80
         self.cfg["config_dir"] = self.root
         self.cfg["events"]["out_of_range"]["enabled"] = False
         self.cfg["events"]["target"]["templates"] = "*.wav"

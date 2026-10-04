@@ -1,5 +1,5 @@
 .venv/
 __pycache__/
 *.pyc
-recordings/**/*.wav
+captures/**/*.wav
 reports/

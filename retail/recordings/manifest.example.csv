@@ -1,9 +1,0 @@
-path,label,split,notes
-tuning/target-quiet-01.wav,target,tuning,one bite with normal ambience
-tuning/target-overlap-01.wav,target,tuning,one bite with another effect
-tuning/out-of-range-01.wav,out_of_range,tuning,one range alert
-tuning/negative-cast-01.wav,none,tuning,casting without a bite
-tuning/negative-ambience-01.wav,none,tuning,ambient water only
-validation/target-overlap-02.wav,target,validation,separate recording session
-validation/out-of-range-02.wav,out_of_range,validation,separate recording session
-validation/negative-effects-02.wav,none,validation,other effects with no bite or range alert

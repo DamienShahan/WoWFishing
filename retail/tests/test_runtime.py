@@ -47,6 +47,8 @@ class CaptureTests(unittest.TestCase):
 class AutomationTests(unittest.TestCase):
     def setUp(self):
         self.cfg = load_config()
+        self.cfg["automation"]["use_lure"] = False
+        self.cfg["automation"]["listen_seconds"] = 23
         self.detector = MagicMock()
         self.backend = MagicMock()
         self.backend.capture.return_value.__enter__.return_value.read.return_value = np.zeros((800, 2))
@@ -67,6 +69,71 @@ class AutomationTests(unittest.TestCase):
 
     def test_out_of_range_never_reels(self):
         self.assertEqual(len(self.check_cycle("out_of_range")), 1)
+
+    def test_recap_counts_successful_reel(self):
+        with self.assertLogs(fishing.LOG, level="INFO") as logs:
+            self.check_cycle("target")
+        output = "\n".join(logs.output)
+        self.assertIn("Casts: 1", output)
+        self.assertIn("Reel-ins after bite detection: 1", output)
+        self.assertIn("Unfinished cycles: 0", output)
+        self.assertEqual(output.count("SESSION RECAP"), 1)
+
+    def test_recap_counts_out_of_range_without_reel(self):
+        with self.assertLogs(fishing.LOG, level="INFO") as logs:
+            self.check_cycle("out_of_range")
+        output = "\n".join(logs.output)
+        self.assertIn("Out-of-range events: 1", output)
+        self.assertIn("Reel-ins after bite detection: 0", output)
+        self.assertIn("Unfinished cycles: 0", output)
+
+    def test_failed_reel_is_not_counted_as_successful(self):
+        match = Match("target", "waveform", 0.9, 0.6, "example.wav", 1, 2)
+        with patch.object(fishing, "Keyboard") as keyboard_class, \
+             patch.object(fishing, "process", return_value=match), \
+             self.assertLogs(fishing.LOG, level="INFO") as logs:
+            keyboard_class.return_value.press.side_effect = [None, RuntimeError("key failed")]
+            with self.assertRaisesRegex(RuntimeError, "key failed"):
+                fishing.run(self.backend, {}, self.detector, self.cfg)
+        output = "\n".join(logs.output)
+        self.assertIn("Casts: 1", output)
+        self.assertIn("Reel-ins after bite detection: 0", output)
+        self.assertIn("Unfinished cycles: 1", output)
+
+    def test_recap_on_interruption_while_listening(self):
+        with patch.object(fishing, "Keyboard"), \
+             patch.object(fishing, "process", side_effect=KeyboardInterrupt), \
+             self.assertLogs(fishing.LOG, level="INFO") as logs:
+            with self.assertRaises(KeyboardInterrupt):
+                fishing.run(self.backend, {}, self.detector, self.cfg)
+        output = "\n".join(logs.output)
+        self.assertIn("Unfinished cycles: 1", output)
+        self.assertIn("Timeouts without detection: 0", output)
+        self.backend.capture.return_value.__exit__.assert_called_once()
+
+    def test_recap_counts_timeout(self):
+        with patch.object(fishing, "Keyboard"), \
+             patch.object(fishing.time, "monotonic", side_effect=[0, 0, 24, 25]), \
+             patch.object(fishing.time, "sleep", side_effect=KeyboardInterrupt), \
+             self.assertLogs(fishing.LOG, level="INFO") as logs:
+            with self.assertRaises(KeyboardInterrupt):
+                fishing.run(self.backend, {}, self.detector, self.cfg)
+        output = "\n".join(logs.output)
+        self.assertIn("Timeouts without detection: 1", output)
+        self.assertIn("Duration: 00:00:25", output)
+        self.assertIn("Unfinished cycles: 0", output)
+
+    def test_recap_before_first_cast_during_lure_wait(self):
+        self.cfg["automation"]["use_lure"] = True
+        with patch.object(fishing, "Keyboard"), \
+             patch.object(fishing.time, "sleep", side_effect=KeyboardInterrupt), \
+             self.assertLogs(fishing.LOG, level="INFO") as logs:
+            with self.assertRaises(KeyboardInterrupt):
+                fishing.run(self.backend, {}, self.detector, self.cfg)
+        output = "\n".join(logs.output)
+        self.assertIn("Casts: 0", output)
+        self.assertIn("Lure uses: 1", output)
+        self.assertIn("Unfinished cycles: 0", output)
 
     def test_listen_only_never_creates_keyboard_controller(self):
         with patch.object(fishing, "Keyboard") as keyboard_class, \

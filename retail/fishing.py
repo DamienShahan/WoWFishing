@@ -1,5 +1,6 @@
 """Listen-only by default; --run enables cast/reel/lure keyboard actions."""
 import argparse
+from dataclasses import dataclass
 import logging
 import random
 import time
@@ -9,6 +10,28 @@ from config import DEFAULT_CONFIG, load_config
 from detector import SoundDetector, choose_match
 
 LOG = logging.getLogger("fishing")
+
+
+@dataclass
+class SessionStats:
+    cycles: int = 0
+    reels: int = 0
+    out_of_range: int = 0
+    timeouts: int = 0
+    lures: int = 0
+
+    def recap(self, elapsed):
+        hours, remaining = divmod(max(0, int(elapsed)), 3600)
+        minutes, seconds = divmod(remaining, 60)
+        unfinished = self.cycles - self.reels - self.out_of_range - self.timeouts
+        LOG.info("📊 SESSION RECAP")
+        LOG.info("⏱️ Duration: %02d:%02d:%02d", hours, minutes, seconds)
+        LOG.info("🎣 Casts: %d", self.cycles)
+        LOG.info("🐟 Reel-ins after bite detection: %d", self.reels)
+        LOG.info("❌ Out-of-range events: %d", self.out_of_range)
+        LOG.info("🔇 Timeouts without detection: %d", self.timeouts)
+        LOG.info("🪱 Lure uses: %d", self.lures)
+        LOG.info("⏹️ Unfinished cycles: %d", unfinished)
 
 
 class Keyboard:
@@ -31,12 +54,13 @@ class Keyboard:
         if focus:
             self.focus()
         self.keys.press(key)
-        LOG.info("Pressed %s", key)
+        LOG.info("⌨️ Pressed '%s'", key)
 
 
 def log_match(match):
+    label = "🐟 Bite detected" if match.event == "target" else "❌ Out of range detected"
     LOG.info("%s: %.3f >= %.3f [%s; %s] audio %.2f-%.2fs",
-             match.event, match.score, match.threshold, match.method,
+             label, match.score, match.threshold, match.method,
              match.template, match.start_seconds, match.end_seconds)
 
 
@@ -70,37 +94,50 @@ def run(backend, device, detector, cfg):
     auto = cfg["automation"]
     keyboard = Keyboard(auto)
     last_lure = float("-inf")
-    cycle = 0
-    LOG.info("AUTOMATION ENABLED. Ctrl+C stops; PyAutoGUI corner fail-safe remains enabled.")
-    while True:
-        if auto["use_lure"] and time.monotonic() - last_lure >= auto["lure_interval_seconds"]:
-            keyboard.press(auto["lure_key"])
-            last_lure = time.monotonic()
-            time.sleep(random.uniform(*auto["lure_wait"]))
-        cycle += 1
-        detector.reset()
-        keyboard.focus()
-        result = None
-        LOG.info("Cycle %d: cast and listen", cycle)
-        # Focus before capture; begin capture just before cast so immediate errors are heard.
-        with backend.capture(device, cfg["audio"]["chunk_seconds"]) as capture:
-            keyboard.press(auto["action_key"], focus=False)
-            deadline = time.monotonic() + auto["listen_seconds"]
-            while time.monotonic() < deadline:
-                result = process(detector, capture.read(), cfg, auto["target_guard_seconds"])
-                if result:
-                    log_match(result)
-                    break
-        if result and result.event == "target":
-            keyboard.press(auto["action_key"])
-            wait = auto["wait_after_target"]
-        elif result and result.event == "out_of_range":
-            LOG.info("Out of range: no reel-in key")
-            wait = auto["wait_after_out_of_range"]
-        else:
-            LOG.info("No event before timeout")
-            wait = auto["wait_after_timeout"]
-        time.sleep(random.uniform(*wait))
+    stats = SessionStats()
+    started = time.monotonic()
+    LOG.info("🎣 AUTOMATION ENABLED. Ctrl+C stops; PyAutoGUI corner fail-safe remains enabled.")
+    try:
+        while True:
+            if auto["use_lure"] and time.monotonic() - last_lure >= auto["lure_interval_seconds"]:
+                LOG.info("🪱 Applying lure")
+                keyboard.press(auto["lure_key"])
+                stats.lures += 1
+                last_lure = time.monotonic()
+                time.sleep(random.uniform(*auto["lure_wait"]))
+            detector.reset()
+            keyboard.focus()
+            result = None
+            LOG.info("🎣 Cycle %d: casting", stats.cycles + 1)
+            # Focus before capture; begin capture just before cast so immediate errors are heard.
+            with backend.capture(device, cfg["audio"]["chunk_seconds"]) as capture:
+                keyboard.press(auto["action_key"], focus=False)
+                stats.cycles += 1
+                deadline = time.monotonic() + auto["listen_seconds"]
+                LOG.info("👂 Listening for a bite for up to %gs", auto["listen_seconds"])
+                while time.monotonic() < deadline:
+                    result = process(detector, capture.read(), cfg, auto["target_guard_seconds"])
+                    if result:
+                        log_match(result)
+                        break
+            if result and result.event == "target":
+                LOG.info("🐟 Reeling in")
+                keyboard.press(auto["action_key"])
+                stats.reels += 1
+                wait = auto["wait_after_target"]
+            elif result and result.event == "out_of_range":
+                stats.out_of_range += 1
+                LOG.info("❌ Out of range: skipping reel-in")
+                wait = auto["wait_after_out_of_range"]
+            else:
+                stats.timeouts += 1
+                LOG.info("🔇 No bite before timeout")
+                wait = auto["wait_after_timeout"]
+            delay = random.uniform(*wait)
+            LOG.info("⌛ Waiting %.2fs before the next cast", delay)
+            time.sleep(delay)
+    finally:
+        stats.recap(time.monotonic() - started)
 
 
 def main():
@@ -117,7 +154,7 @@ def main():
     cfg = load_config(args.config)
     with AudioBackend() as backend:
         device = backend.device(cfg["audio"]["device_index"])
-        LOG.info("Capture: %s", describe(device))
+        LOG.info("🔊 Capture: %s", describe(device))
         detector = SoundDetector(cfg, int(device["defaultSampleRate"]), args.mode)
         LOG.info("Mode: %s; %d templates; thresholds are provisional until calibrated",
                  detector.mode, len(detector.templates))
@@ -132,7 +169,7 @@ if __name__ == "__main__":
     try:
         main()
     except KeyboardInterrupt:
-        print("\nStopped.")
+        print("\n⏹️ Stopped.")
     except Exception as exc:
         LOG.error("Stopped: %s", exc)
         raise SystemExit(1)

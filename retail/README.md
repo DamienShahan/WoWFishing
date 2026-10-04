@@ -4,10 +4,10 @@ A new implementation of the bot in `../classic/`. It listens to Windows output
 audio for a fishing bite or an out-of-range alert. **Running `python fishing.py`
 only listens. Add `--run` to enable casting, reeling, and optional lure keys.**
 
-The included references are copies of the classic sounds. The software can run
-with them, but retail accuracy and the initial thresholds have not been validated.
-Use [required-sounds.md](required-sounds.md) to collect better references and
-independent test recordings. [PLAN.md](PLAN.md) tracks implementation and calibration.
+Keep your bite references in `sounds/target/` and check detection live while fishing
+manually. A separate recordings folder or test collection is not required.
+[required-sounds.md](required-sounds.md) describes reference preparation, and
+[PLAN.md](PLAN.md) tracks implementation and validation.
 
 ## What changed
 
@@ -64,9 +64,8 @@ sounds/target/         clean fishing bite references
 sounds/out_of_range/   clean out-of-range alert references
 ```
 
-Start with the supplied `legacy-*.wav` copies, then replace them with retail
-recordings. Remove obsolete references from these directories once replacements
-are ready. Each template must be between 0.08 and 5 seconds and contain non-silent
+Use your clean retail bite references, such as `bite-1.wav` and `bite-2.wav`.
+Remove obsolete references from these directories once replacements are ready. Each template must be between 0.08 and 5 seconds and contain non-silent
 audio. Prefer short, distinctive clips with the full useful cue and minimal padding.
 A full-template detector cannot match until that much audio has arrived; long
 templates increase response delay. Stereo and mono WAVs are accepted; detection
@@ -101,74 +100,52 @@ Listen-only mode reports at most one event per configured cooldown. It does not
 apply the automation's post-cast target guard because it cannot know when you cast.
 No recordings are automatically saved; use the recording tool below.
 
-## 5. Record and trim test audio
+## 5. Tune using live tests
+
+Run `python fishing.py --mode spectral --debug` while fishing manually. Compare
+scores at real bites with scores from casting and background sounds. In
+`settings.yaml`, `detection.mode` selects the method; `waveform_threshold` or
+`spectral_threshold` under `events.target` controls only that method. Debug is
+logging, not a separate detection mode or threshold.
+
+A lower threshold may recover missed bites but also allow false triggers. Keep
+both useful bite references and change one setting at a time. No saved test
+recordings are required. Out-of-range detection can remain disabled.
+
+### Optional recording and offline tools
+
+`record.py` and `evaluate.py` remain available if a specific failure needs further
+investigation. They are optional and create output folders only when requested:
 
 ```powershell
-python record.py capture --seconds 60 --output recordings/session-01.wav
-python record.py trim --input recordings/session-01.wav --start 12.3 --end 13.1 --output sounds/target/bite-01.wav
+python record.py capture --seconds 30 --output captures/session.wav
+python record.py trim --input captures/session.wav --start 12.3 --end 13.1 --output sounds/target/bite-03.wav
 ```
 
-Capture records system output without pressing keys. Fish manually while it runs.
-Times are seconds from the beginning of the source file. Capture writes to disk
-incrementally; Ctrl+C keeps the audio already recorded. Existing files are refused
-unless `--overwrite` is supplied. A capture failure can leave a partial WAV; inspect
-its duration before using it. The tools write PCM16 WAV without normalizing volume.
+Replace the example times with the real cue boundaries. Capture sends no keys;
+Ctrl+C keeps audio already recorded. Existing WAVs require `--overwrite` to replace.
 
-For test clips, keep a few seconds of background before and after the event. Put
-them under `recordings/tuning/` or `recordings/validation/`, not in `sounds/`.
-The recording checklist describes how to avoid mixing templates and test data.
+For an optional offline comparison, create your own `captures/manifest.csv`:
 
-## 6. Compare modes and choose thresholds
+```csv
+path,label,split
+bite-test.wav,target,tuning
+background-test.wav,none,tuning
+```
 
-Copy `recordings/manifest.example.csv` to `recordings/manifest.csv`, then edit its
-rows to refer to your real files. Example paths are placeholders. Each row has:
-
-| Column | Meaning |
-| --- | --- |
-| `path` | WAV path relative to the manifest file |
-| `label` | `target`, `out_of_range`, or `none` |
-| `split` | `tuning` or `validation` |
-| `notes` | Optional description of overlapping audio |
-
-Use clips containing one labeled event type; split recordings containing both
-event types into separate clips. A `none` clip must contain neither event.
-Keep all clips from one source recording in the same split. Save complete separate
-sessions for validation; do not make duplicate clips appear in both splits.
+Paths are relative to the manifest. Labels are `target`, `out_of_range`, or `none`;
+splits are `tuning` or `validation`. Use real files and separate examples from those
+used as references. Keep clips from the same session in the same split.
 
 ```powershell
-python evaluate.py --manifest recordings/manifest.csv --split tuning --mode both --output reports/tuning.json
+python evaluate.py --manifest captures/manifest.csv --split tuning --mode both --output reports/tuning.json
 ```
 
-The report includes per-clip peak scores, detected timestamps/templates, processing
-time, and per-event true positives, false positives, false negatives, precision,
-and recall. Threshold suggestions are produced only when the tuning positive and
-negative peak scores have a gap. Overlapping scores mean no perfect separating
-threshold exists for those clips. More references or a different mode may help.
+Reports contain peak scores, detections, processing times, and clip-level metrics.
+These do not verify every bite's timing. Threshold suggestions use tuning data
+only and never change your settings automatically.
 
-Edit the appropriate `waveform_threshold` or `spectral_threshold` for **each event**
-in `settings.yaml`, select `detection.mode`, and re-run tuning. A lower threshold
-usually finds more events but permits more false triggers. Suggestions do not
-modify settings and do not account fully for ambiguity rejection or cooldown, so
-always re-run the actual decisions after editing thresholds.
-
-Then evaluate the untouched validation set:
-
-```powershell
-python evaluate.py --manifest recordings/manifest.csv --split validation --mode both --output reports/validation.json
-```
-
-These metrics measure **event presence per clip**, not exact event-level accuracy
-or the delay after the true bite onset. Inspect the recorded timestamps and listen
-to failures. Multiple detections in one positive clip still count as one positive
-clip. For trustworthy reaction-time checks, compare detections against manually
-noted onset times and observe the live bot. Positive clips also contain background;
-a wrong detection within a positive clip can inflate clip-level recall.
-
-Evaluation starts PCEN from a fresh state for each clip, as automation does for
-each cast. Include representative background leading into each test event.
-Continuous listen-only mode retains background state for the entire session.
-
-## 7. Enable automatic fishing
+## 6. Enable automatic fishing
 
 Configure the game so `automation.action_key` performs both casting and interacting
 with the bobber/reeling. This project does not install an addon or configure game
@@ -201,7 +178,16 @@ Set `use_lure: true` only after binding a working retail lure action to `lure_ke
 It runs immediately at the first cycle and subsequently when the interval has
 elapsed, at the next cycle boundary. No classic item-specific macro is assumed.
 
-**Ctrl+C stops the program.** PyAutoGUI's corner fail-safe remains enabled for
+Run output marks casting (🎣), listening (👂), bite detection/reeling (🐟),
+waiting (⌛), lure use (🪱), and timeouts (🔇) with emojis.
+
+**Ctrl+C stops the program and prints a session recap:** elapsed time, casts,
+reel-ins after bite detection, out-of-range events, timeouts, lure uses, and
+unfinished cycles. Errors during a run also print the recap before exiting.
+Reel-ins count successfully sent reel keys; they do not verify fish actually looted.
+Stopping mid-cast leaves an unfinished cycle, not a timeout or successful reel.
+
+PyAutoGUI's corner fail-safe remains enabled for
 keyboard/mouse actions. Automation brings the game to the foreground when casting,
 reeling, or applying a lure; it can interrupt work in another application.
 
@@ -212,7 +198,7 @@ reeling, or applying a lure; it can interrupt work in another application.
 | No loopback audio | Confirm game output, rerun device listing, and ensure audio is playing. Capture stops after a three-second gap in delivered data. |
 | Reference not found | Check the enabled event's glob. Template paths are relative to `settings.yaml`. |
 | Never detects | Use `--debug`; check recordings and thresholds, reference length, and absolute `min_rms` gate. |
-| Detects casting or other effects | Add these to negative tuning clips; replace poor templates and retune rather than only lowering thresholds. |
+| Detects casting or other effects | Note the live score for the confusing sound; replace poor references and retune rather than only lowering thresholds. |
 | Spectral mode performs worse | Use waveform mode; PCEN is sensitive to reference quality and background context. No method can guarantee detection under loud masking sounds. |
 | Processing warning or queue overflow | Reduce the number/length of templates or use waveform mode. A full queue stops capture rather than processing delayed audio indefinitely. |
 | Window/key error | Check the title expression and binding; run with compatible game/script privileges. |
@@ -243,7 +229,6 @@ retail/
   record.py               capture and trim commands
   evaluate.py             labeled offline comparison
   sounds/                 reference templates
-  recordings/             your independent test recordings and manifest
   tests/                  automated regressions
 ```
 

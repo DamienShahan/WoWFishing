@@ -1,12 +1,11 @@
 # Reference sounds
 
-`target/legacy-target.wav` and `out_of_range/legacy-out-of-range.wav` are copies
-of the classic project's recordings. They make the new detector runnable, but
-are not verified retail recordings. The originals remain in `classic/`.
+Keep clean bite WAVs in `target/`. Each WAV matching an enabled event's pattern in
+`settings.yaml` is loaded automatically; restart the bot after adding references.
+Move obsolete references out of these folders to stop matching them.
 
-Replace these copies with clean retail references following
-[`../required-sounds.md`](../required-sounds.md). Every WAV matched by an enabled
-event's glob in `settings.yaml` is loaded; move obsolete references out of these
-folders to stop using them. Mixing in a bad reference can cause false matches.
+Out-of-range references are optional while that event is disabled. Original
+classic sounds remain in `../../classic/`.
 
-Independent recordings for evaluation belong in `recordings/`, not here.
+See [required-sounds.md](../required-sounds.md) for reference preparation. Live
+testing is sufficient to get started; a separate recordings folder is not needed.

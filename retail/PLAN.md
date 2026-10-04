@@ -24,16 +24,18 @@ cast / listen / reel / wait flow and optional lure support.
   multiple templates, spectral matching, and configuration validation.
 - [x] Provide a user guide and `required-sounds.md` recording checklist.
 
-## Data and calibration milestones
+## Current validation workflow
 
-- [x] Bootstrap with copies of the classic references, clearly labeled as legacy.
-- [ ] Record clean retail examples and independent positive/negative clips as listed
-   in `required-sounds.md`. Do not use test recordings as templates.
-- [ ] Compare waveform and spectral modes on a tuning split. Inspect misses and false
-   detections; choose separate thresholds for target and out-of-range events.
-- [ ] Evaluate the selected settings on the untouched validation split.
-- [ ] Check live listen-only logs, CPU timing, and response delay while fishing
-   manually. Then test `--run` during an observed session.
+- [x] Add retail bite references; multiple WAVs are supported.
+- [x] Compare references on the available bite/background samples.
+- [x] Remove the optional `recordings/` folder at the user's request.
+- [x] Add emoji run messages and a stop/error session recap.
+- [ ] Continue live listen-only tests, checking real bites against distracting sounds.
+- [ ] Confirm the selected mode and threshold in observed gameplay.
+
+Live testing is the current workflow. No larger recording collection is required.
+Out-of-range detection stays disabled until a working cue is available. Offline
+recording/evaluation utilities remain optional for investigating specific failures.
 
 ## Decisions
 
@@ -61,8 +63,8 @@ cast / listen / reel / wait flow and optional lure support.
 
 ## Status
 
-Initial implementation completed on 2026-10-04. Real-world calibration and observed
-gameplay checks require the new recordings and remain a separate milestone.
+Initial implementation completed on 2026-10-04. Follow-up validation uses live
+gameplay; collecting more recordings is optional.
 
 Verification completed using the existing development environment:
 
@@ -83,3 +85,11 @@ Verification completed using the existing development environment:
 Synthetic clips reusing templates are regression checks, not independent evidence
 of retail accuracy. No live game actions or hardware capture were performed during
 implementation verification.
+
+Run recap counts casts, sent reel-in keys, range alerts, timeouts, lure keys, and
+unfinished cycles. A sent reel-in key does not establish that a fish was looted.
+
+Follow-up verification: all 31 tests pass, including recap accounting on Ctrl+C,
+timeout, lure wait, out-of-range detection, and failed reel key delivery. Waveform
+test fixtures now select their mode explicitly so changing the user's live mode
+does not change what those regressions test. No in-game actions were run.

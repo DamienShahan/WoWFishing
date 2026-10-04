@@ -18,7 +18,7 @@ events:
     enabled: true
     templates: sounds/target/*.wav
     waveform_threshold: 0.65 # PROVISIONAL; calibrate with your recordings
-    spectral_threshold: 0.80
+    spectral_threshold: 0.70
   out_of_range:
     enabled: false
     templates: sounds/out_of_range/*.wav
