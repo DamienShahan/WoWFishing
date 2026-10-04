@@ -18,7 +18,7 @@ Set WoWFishing's **Action key** to that same key.
 
 ### Lure macro (optional)
 
-If you want to enable **Use lure**, create this in-game macro with `/macro`:
+If you want to enable `Use lure`, create this in-game macro with `/macro`:
 
 ```lua
 #showtooltip
