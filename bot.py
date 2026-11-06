@@ -76,8 +76,7 @@ class BotSession:
             self.log("▶️ Starting fishing session. Loading bite sound references…",
                      kind="start", title="Getting ready to fish", body="Loading bite sounds and preparing your session.")
             detector = self.detector_factory(
-                default_reference_paths(), threshold=cfg["THRESHOLD"],
-                min_level_dbfs=cfg["MIN_BITE_LEVEL_DBFS"] if cfg["USE_BITE_LEVEL_FILTER"] else None)
+                default_reference_paths(), threshold=cfg["THRESHOLD"])
             if self.cancelled():
                 return
             with self.backend_factory() as backend:

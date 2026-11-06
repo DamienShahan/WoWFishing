@@ -328,7 +328,6 @@ class SettingsDialog(ctk.CTkToplevel):
         body.grid(row=1, column=0, sticky="nsew", padx=20)
         body.grid_columnconfigure(1, weight=1)
         self.entries = {}
-        self.level_filter_var = ctk.BooleanVar(value=app.settings["USE_BITE_LEVEL_FILTER"])
         fields = [
             ("ACTION_KEY", "Action key", "Casts and reels in using the same key."),
             ("LURE_KEY", "Lure key", "Bind this to your in-game lure macro."),
@@ -338,7 +337,6 @@ class SettingsDialog(ctk.CTkToplevel):
             ("LURE_COOLDOWN_SECONDS", "Lure interval (seconds)", "Reapply at the next cycle after this interval."),
             ("LISTEN_DURATION", "Cast timeout (seconds)", "Recast if no bite is detected in this time."),
             ("THRESHOLD", "Detection threshold", "0.01–1.00; higher requires a stronger match."),
-            ("MIN_BITE_LEVEL_DBFS", "Minimum bite level (dBFS)", "More negative values allow quieter bites; default -42."),
         ]
         for row, (key, label, hint) in enumerate(fields):
             ctk.CTkLabel(body, text=label, anchor="w", font=("Segoe UI", 13, "bold")).grid(row=row*2, column=0, sticky="w", padx=12, pady=(12, 0))
@@ -355,12 +353,7 @@ class SettingsDialog(ctk.CTkToplevel):
                 entries.append(entry)
             self.entries[key] = entries
             ctk.CTkLabel(body, text=hint, text_color=MUTED, font=("Segoe UI", 11), anchor="w").grid(row=row*2+1, column=0, columnspan=2, sticky="w", padx=12, pady=(0, 3))
-        ctk.CTkCheckBox(body, text="Use Volume Filter", variable=self.level_filter_var,
-                        command=self.update_level_filter).grid(row=len(fields)*2, column=0, columnspan=2, sticky="w", padx=12, pady=(16, 4))
-        ctk.CTkLabel(body, text="Reduces false positives. Deactivate if you are missing bites.", text_color=MUTED,
-                     font=("Segoe UI", 11), anchor="w").grid(row=len(fields)*2+1, column=0, columnspan=2, sticky="w", padx=12)
-        self.update_level_filter()
-        ctk.CTkLabel(body, text="Keys: letters (including ä, ö, ü), numbers, F1–F24,\nspace, or navigation keys. Bind the action key in WoW first.", text_color=MUTED, justify="left", font=("Segoe UI", 11)).grid(row=len(fields)*2+2, column=0, columnspan=2, sticky="w", padx=12, pady=16)
+        ctk.CTkLabel(body, text="Keys: letters (including ä, ö, ü), numbers, F1–F24,\nspace, or navigation keys. Bind the action key in WoW first.", text_color=MUTED, justify="left", font=("Segoe UI", 11)).grid(row=len(fields)*2, column=0, columnspan=2, sticky="w", padx=12, pady=16)
         self.error = ctk.CTkLabel(self, text="", text_color="#f08088", wraplength=510, justify="left")
         self.error.grid(row=2, column=0, sticky="ew", padx=24, pady=(6, 0))
         footer = ctk.CTkFrame(self, fg_color="transparent")
@@ -369,14 +362,9 @@ class SettingsDialog(ctk.CTkToplevel):
         ctk.CTkButton(footer, text="Save settings", width=130, fg_color=GREEN, hover_color="#2c983d", command=self.commit).pack(side="left")
         self.after(100, self.grab_set)
 
-    def update_level_filter(self):
-        self.entries["MIN_BITE_LEVEL_DBFS"][0].configure(
-            state="normal" if self.level_filter_var.get() else "disabled")
-
     def commit(self):
         try:
             cfg = self.app.snapshot()
-            cfg["USE_BITE_LEVEL_FILTER"] = self.level_filter_var.get()
             for key, entries in self.entries.items():
                 cfg[key] = [entry.get() for entry in entries] if key in RANGES else entries[0].get()
             self.app.settings = save(self.app.path, cfg)

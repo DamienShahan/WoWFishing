@@ -116,68 +116,33 @@ class FingerprintTests(unittest.TestCase):
         self.assertFalse(any(fixed.accepts(m) for m in fixed.match(audio)))
         self.assertTrue(any(aware.accepts(m) for m in aware.match(audio)))
 
-    def test_recorded_false_positives_are_rejected_in_native_rate_streams(self):
+    def test_quiet_bites_are_detected_in_native_rate_streams(self):
         for duration in (None, 1.0):
             detector = FingerprintDetector(default_reference_paths(), duration=duration)
-            for number in (1, 2, 3):
+            for number in (1, 4):
                 with self.subTest(duration=duration, number=number):
-                    audio, rate = sf.read(SOUNDS / "validation" / f"false-positive{number}.wav",
-                                          always_2d=True)
+                    audio, rate = sf.read(sound_path(number), always_2d=True)
+                    audio *= .01  # 40 dB quieter, below the retired volume floor.
                     # Shift the recording away from the stream's FFT/block grid.
                     audio = np.pad(audio, ((round(.137*rate), round(.3*rate)), (0, 0)))
                     stream = StreamDetector(detector, rate)
-                    events, candidates = [], []
+                    events = []
                     size = round(.1*rate)
                     for start in range(0, len(audio), size):
-                        matches, found = stream.process(audio[start:start+size])
-                        candidates.extend(matches)
+                        _, found = stream.process(audio[start:start+size])
                         if found:
                             events.append(found)
-                    self.assertFalse(events, events)
-                    # These recordings really reach the fingerprint threshold;
-                    # the level check is what rejects the strongest candidate.
-                    strongest = max(candidates, key=lambda match: match.score)
-                    self.assertGreaterEqual(strongest.score, detector.threshold)
-                    self.assertLess(strongest.level_dbfs, detector.min_level_dbfs)
+                    self.assertEqual([match.name for match in events], [f"bite{number}.wav"])
 
-    def test_level_filter_can_be_disabled_or_adjusted_for_quiet_bites(self):
-        audio = np.pad(read_audio(sound_path(1))*.01, (5973, 8000))
-        for floor, accepted in ((-42.0, False), (None, True), (-70.0, True)):
-            with self.subTest(floor=floor):
-                detector = FingerprintDetector(default_reference_paths(), min_level_dbfs=floor)
-                matches = detector.match(audio)
-                self.assertEqual(any(detector.accepts(m) for m in matches), accepted, matches)
-
-    def test_all_real_bites_remain_detectable_six_db_quieter(self):
+    def test_all_real_bites_remain_detectable_at_lower_volumes(self):
         for duration in (None, 1.0):
             detector = FingerprintDetector(default_reference_paths(), duration=duration)
             for number in range(1, 13):
-                with self.subTest(duration=duration, number=number):
-                    audio = np.pad(read_audio(sound_path(number))*10**(-6/20), (5973, 8000))
-                    matches = detector.match(audio)
-                    self.assertTrue(any(detector.accepts(m) for m in matches), matches)
-
-    def test_level_uses_matched_window_and_excludes_dc(self):
-        detector = FingerprintDetector([sound_path(1)])
-        quiet = read_audio(sound_path(1))*.1
-        loud = .05*np.sin(2*np.pi*800*np.arange(16000)/RATE)
-        audio = np.concatenate((loud, np.zeros(16000), quiet, np.zeros(8000)))
-        for dc in (0, .02):
-            with self.subTest(dc=dc):
-                matches = detector.match(audio+dc)
-                self.assertTrue(matches)
-                self.assertFalse(any(detector.accepts(m) for m in matches), matches)
-                self.assertLess(matches[0].level_dbfs, -42)
-
-    def test_quiet_copy_does_not_hide_a_louder_noisy_bite(self):
-        detector = FingerprintDetector([sound_path(1)])
-        audio = read_audio(sound_path(1))
-        noisy = audio + np.random.default_rng(17).normal(0, np.std(audio), len(audio))
-        incoming = np.concatenate((np.zeros(5973), audio*.07, np.zeros(8000), noisy*.4,
-                                   np.zeros(8000)))
-        matches = detector.match(incoming)
-        self.assertTrue(any(detector.accepts(m) for m in matches), matches)
-        self.assertGreater(matches[0].start, (5973+len(audio))/RATE)
+                for gain_db in (-6, -40):
+                    with self.subTest(duration=duration, number=number, gain_db=gain_db):
+                        audio = np.pad(read_audio(sound_path(number))*10**(gain_db/20), (5973, 8000))
+                        matches = detector.match(audio)
+                        self.assertTrue(any(detector.accepts(m) for m in matches), matches)
 
 
 if __name__ == "__main__":
