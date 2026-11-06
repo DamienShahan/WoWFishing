@@ -355,12 +355,13 @@ class SettingsDialog(ctk.CTkToplevel):
                 entries.append(entry)
             self.entries[key] = entries
             ctk.CTkLabel(body, text=hint, text_color=MUTED, font=("Segoe UI", 11), anchor="w").grid(row=row*2+1, column=0, columnspan=2, sticky="w", padx=12, pady=(0, 3))
-        ctk.CTkCheckBox(body, text="Use Volume Filter", variable=self.level_filter_var,
-                        command=self.update_level_filter).grid(row=len(fields)*2, column=0, columnspan=2, sticky="w", padx=12, pady=(16, 4))
+        ctk.CTkLabel(body, text="Use Volume Filter", anchor="w", font=("Segoe UI", 13, "bold")).grid(
+            row=len(fields)*2, column=0, sticky="w", padx=12, pady=(16, 4))
+        ctk.CTkCheckBox(body, text="", width=24, variable=self.level_filter_var,
+                        command=self.update_level_filter).grid(row=len(fields)*2, column=1, sticky="e", padx=12, pady=(16, 4))
         ctk.CTkLabel(body, text="Reduces false positives. Deactivate if you are missing bites.", text_color=MUTED,
                      font=("Segoe UI", 11), anchor="w").grid(row=len(fields)*2+1, column=0, columnspan=2, sticky="w", padx=12)
         self.update_level_filter()
-        ctk.CTkLabel(body, text="Keys: letters (including ä, ö, ü), numbers, F1–F24,\nspace, or navigation keys. Bind the action key in WoW first.", text_color=MUTED, justify="left", font=("Segoe UI", 11)).grid(row=len(fields)*2+2, column=0, columnspan=2, sticky="w", padx=12, pady=16)
         self.error = ctk.CTkLabel(self, text="", text_color="#f08088", wraplength=510, justify="left")
         self.error.grid(row=2, column=0, sticky="ew", padx=24, pady=(6, 0))
         footer = ctk.CTkFrame(self, fg_color="transparent")
