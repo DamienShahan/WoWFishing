@@ -25,10 +25,6 @@ def main():
     parser.add_argument("--speed-tolerance", type=float, default=0.12,
                         help="Fractional playback-rate range around 1.0 (default: 0.12 = +/-12%%; 0 disables)")
     parser.add_argument("--min-anchors", type=int, default=8)
-    parser.add_argument("--min-level-dbfs", type=float, default=-42.0,
-                        help="Minimum RMS level in the matched bite window, dBFS (default: -42; lower allows quieter sounds)")
-    parser.add_argument("--no-level-filter", action="store_true",
-                        help="Disable the minimum bite level check; use fingerprint matching at any volume")
     parser.add_argument("--duration", type=float, help="Use only this many seconds after each reference's quiet lead-in")
     parser.add_argument("--cooldown", type=float, default=2.0)
     parser.add_argument("--debug", action="store_true", help="Print strongest recent score every second")
@@ -39,8 +35,6 @@ def main():
         parser.error("duration must be at least 0.4 seconds")
     if not np.isfinite(args.speed_tolerance) or not 0 <= args.speed_tolerance <= 0.25:
         parser.error("speed-tolerance must be between 0 and 0.25")
-    if not np.isfinite(args.min_level_dbfs) or not -120 <= args.min_level_dbfs <= 0:
-        parser.error("min-level-dbfs must be between -120 and 0")
     if args.list_devices:
         AudioBackend, describe = capture_backend()
         with AudioBackend() as backend:
@@ -52,12 +46,9 @@ def main():
         return
     paths = args.references or default_reference_paths()
     detector = FingerprintDetector(paths, args.duration, args.threshold, args.min_anchors,
-                                   args.speed_tolerance,
-                                   min_level_dbfs=None if args.no_level_filter else args.min_level_dbfs)
+                                   args.speed_tolerance)
     print("Listen-only landmark detector. No keys are sent. Stop with Ctrl+C.")
     print(f"Provisional threshold: {args.threshold:.2f}; minimum anchors: {args.min_anchors}")
-    print("Minimum matched bite level: " + ("disabled" if detector.min_level_dbfs is None
-          else f"{detector.min_level_dbfs:.1f} dBFS RMS"))
     print(f"Playback rates: {detector.speeds[0]:.2f}x to {detector.speeds[-1]:.2f}x "
           f"({len(detector.speeds)} hypotheses; linked speed/pitch changes)")
     for ref in detector.references:
@@ -79,16 +70,12 @@ def main():
             count += 1
             print(f"BITE #{count} at {stream.total/stream.rate:.2f}s | {found.name} "
                   f"score={found.score:.3f} anchors={found.anchors} span={found.span:.2f}s "
-                  f"level={found.level_dbfs:.1f}dBFS "
                   f"speed~{found.speed:.2f}x "
                   f"matched={found.start:.2f}..{found.end:.2f}s", flush=True)
         now = stream.total/stream.rate
         if args.debug and now >= next_debug:
             text = (f"{debug_peak.name} score={debug_peak.score:.3f} anchors={debug_peak.anchors} "
-                    f"span={debug_peak.span:.2f}s speed~{debug_peak.speed:.2f}x "
-                    f"level={debug_peak.level_dbfs:.1f}dBFS"
-                    + (" (below minimum level)" if detector.min_level_dbfs is not None
-                       and debug_peak.level_dbfs < detector.min_level_dbfs else "")
+                    f"span={debug_peak.span:.2f}s speed~{debug_peak.speed:.2f}x"
                     if debug_peak else "no aligned candidate")
             print(f"[{now:7.2f}s] {text} | processing={timings[-1]*1000:.0f}ms", flush=True)
             debug_peak = None
@@ -120,8 +107,8 @@ def main():
     finally:
         print(f"Detections: {count}")
         if peak:
-            print(f"Strongest score before level filtering: {peak.score:.3f} "
-                  f"({peak.name}, {peak.anchors} anchors, {peak.level_dbfs:.1f}dBFS)")
+            print(f"Strongest score: {peak.score:.3f} "
+                  f"({peak.name}, {peak.anchors} anchors)")
         if timings:
             p95 = np.percentile(timings, 95)*1000
             print(f"Processing p95: {p95:.0f} ms per 100 ms block")

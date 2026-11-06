@@ -89,20 +89,15 @@ class Match:
     start: float
     end: float
     speed: float = 1.0
-    level_dbfs: float = -float("inf")
 
 
 class FingerprintDetector:
     def __init__(self, paths, duration=None, threshold=0.40, min_anchors=8,
-                 speed_tolerance=0.12, min_level_dbfs=-42.0):
+                 speed_tolerance=0.12):
         if not np.isfinite(speed_tolerance) or not 0 <= speed_tolerance <= 0.25:
             raise ValueError("speed_tolerance must be between 0 and 0.25")
-        if (min_level_dbfs is not None
-                and (not np.isfinite(min_level_dbfs) or not -120 <= min_level_dbfs <= 0)):
-            raise ValueError("min_level_dbfs must be None or between -120 and 0")
         self.threshold = threshold
         self.min_anchors = min_anchors
-        self.min_level_dbfs = min_level_dbfs
         self.references = []
         for path in paths:
             audio = read_audio(path)
@@ -159,8 +154,7 @@ class FingerprintDetector:
         """Return the best aligned candidate for each reference.
 
         Score is the fraction of unique reference anchors supported by pairs,
-        NOT a probability. Level is DC-removed RMS in the aligned sound window,
-        in dBFS; it is checked separately from fingerprint similarity.
+        NOT a probability.
         Offset voting tolerates a few STFT frames of jitter.
         """
         _, pairs = landmarks(audio)
@@ -175,11 +169,6 @@ class FingerprintDetector:
         total = int(counts.sum())
         if not total:
             return []
-        # Prefix sums make each aligned-window level check constant time. Do not
-        # let loud audio elsewhere in the rolling buffer raise a quiet match's
-        # level, and remove DC so a recording offset cannot satisfy the floor.
-        sums = np.r_[0.0, np.cumsum(audio)]
-        squares = np.r_[0.0, np.cumsum(audio*audio)]
         # Batch all fuzzy hash lookups and offset votes in NumPy. This keeps the
         # rate hypotheses out of the per-pair Python hot loop.
         lookup_ids = np.repeat(np.arange(len(lookups)), counts)
@@ -222,19 +211,11 @@ class FingerprintDetector:
                 if not len(supported):
                     continue
                 times = ref.peaks[supported, 0]*HOP/RATE/speed
-                first = max(0, round(starts_seconds[index]*RATE-origin*RATE))
-                last = min(len(audio), round(ends_seconds[index]*RATE-origin*RATE))
-                count = last-first
-                if count <= 0:
-                    continue
-                mean = (sums[last]-sums[first])/count
-                power = (squares[last]-squares[first])/count-mean*mean
-                level_dbfs = float(10*np.log10(max(power, 1e-30)))
                 candidate = Match(ref.name, len(supported)/len(ref.anchors), len(supported),
                                   float(np.ptp(times)), float(starts_seconds[index]),
-                                  float(ends_seconds[index]), speed, level_dbfs)
-                # A strong but quiet alignment must not hide a valid, louder
-                # occurrence of the same reference elsewhere in the window.
+                                  float(ends_seconds[index]), speed)
+                # Prefer an accepted alignment over a higher-scoring candidate
+                # that lacks enough anchors or temporal coverage.
                 if (ref_id not in results
                         or (self.accepts(candidate), candidate.score)
                         > (self.accepts(results[ref_id]), results[ref_id].score)):
@@ -244,7 +225,6 @@ class FingerprintDetector:
     def accepts(self, match):
         ref = next(ref for ref in self.references if ref.name == match.name)
         return (match.score >= self.threshold and match.anchors >= self.min_anchors
-                and (self.min_level_dbfs is None or match.level_dbfs >= self.min_level_dbfs)
                 and match.span >= min(0.35, ref.duration/match.speed*0.4))
 
 

@@ -1,6 +1,9 @@
 # Quiet background false positives
 
-Analyzed 2026-11-06 on `false-positive-handling`. All three recordings reproduce a false bite with the volume filter disabled. With the new default filter, all three are rejected while all twelve supplied real bite recordings remain detectable.
+Historical experiment: the volume filter described below has since been removed
+because it caused missed bites in live use. Its settings and CLI options no longer apply.
+
+Analyzed 2026-11-06 on `false-positive-handling`. All three recordings reproduce a false bite with the volume filter disabled. With the experimental filter, all three are rejected while all twelve supplied real bite recordings remain detectable.
 
 ## Cause
 

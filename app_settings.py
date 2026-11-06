@@ -16,8 +16,6 @@ DEFAULTS = {
     "WAIT_AFTER_TARGET_FOUND": [3.0, 5.0],
     "LURE_WAIT_TIME": [5.1, 5.5], "LURE_COOLDOWN_SECONDS": 610.0,
     "LISTEN_DURATION": 23.0, "THRESHOLD": 0.40,
-    "MIN_BITE_LEVEL_DBFS": -42.0,
-    "USE_BITE_LEVEL_FILTER": True,
     "STOP_AUTOMATICALLY": False, "STOP_AFTER_MINUTES": 30.0,
 }
 UMLAUT_KEYS = frozenset("äöü")
@@ -37,6 +35,9 @@ def settings_path():
 def validate(values):
     if not isinstance(values, dict):
         raise ValueError("Settings must be a YAML mapping.")
+    # Discard retired volume-filter preferences from older settings files.
+    values = {name: value for name, value in values.items()
+              if name not in {"USE_BITE_LEVEL_FILTER", "MIN_BITE_LEVEL_DBFS"}}
     unknown = set(values) - set(DEFAULTS)
     if unknown:
         raise ValueError("Unknown settings: " + ", ".join(sorted(map(str, unknown))))
@@ -46,7 +47,7 @@ def validate(values):
         if not isinstance(cfg[name], str) or cfg[name].strip().lower() not in KEYS:
             raise ValueError(f"{name}: use one key, such as k, ö, space, or f5.")
         cfg[name] = cfg[name].strip().lower()
-    for name in ("USE_LURE", "STOP_AUTOMATICALLY", "USE_BITE_LEVEL_FILTER"):
+    for name in ("USE_LURE", "STOP_AUTOMATICALLY"):
         if type(cfg[name]) is not bool:
             raise ValueError(f"{name} must be true or false.")
 
@@ -68,7 +69,6 @@ def validate(values):
             raise ValueError(f"{name}: minimum cannot exceed maximum.")
         cfg[name] = [lo, hi]
     for name, lo, hi in (("LISTEN_DURATION", 1, 120), ("THRESHOLD", .01, 1),
-                         ("MIN_BITE_LEVEL_DBFS", -120, 0),
                          ("LURE_COOLDOWN_SECONDS", 1, 86400), ("STOP_AFTER_MINUTES", .01, 10080)):
         cfg[name] = number(cfg[name], name, lo, hi)
     index = cfg["OUTPUT_DEVICE_INDEX"]

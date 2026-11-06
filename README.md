@@ -86,8 +86,6 @@ Open **Settings** for:
 | **Lure cast wait** / **Lure interval** | How long to wait for a lure to finish, and how often to reapply it.                                                     |
 | **Cast timeout**                       | How long to listen before trying another cast. Default: 23 seconds.                                                     |
 | **Detection threshold**                | How strong a sound match must be. Start with the default of `0.40`; a higher value requires a stronger match.           |
-| **Use Volume Filter**                  | Reduces false positives. Deactivate if you are missing bites. Enabled by default.                                       |
-| **Minimum bite level (dBFS)**          | Minimum RMS level in a matched bite window. Default: `-42`; more negative values allow quieter bites.                   |
 
 Your choices are saved for the next launch. Packaged releases store settings in
 `%APPDATA%\WoWFishing\settings.yaml`, so they survive replacing the app folder.

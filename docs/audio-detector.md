@@ -68,45 +68,11 @@ occurred, along with the printed scores. Those observations matter more than the
 reference self-tests. The other eight recordings are useful checks of whether the
 four references cover the observed playback-rate variants. Keep all twelve WAVs.
 
-### Volume filter
+### Detection threshold
 
-**Use Volume Filter** is enabled by default in Settings. Its description is
-"Reduces false positives. Deactivate if you are missing bites."
-The minimum bite level defaults to **-42 dBFS RMS**. More negative values allow
-quieter sounds. The saved settings are `USE_BITE_LEVEL_FILTER: true` and
-`MIN_BITE_LEVEL_DBFS: -42.0`; existing settings files inherit these defaults.
-Unchecking the option bypasses the level check and preserves the chosen limit.
-
-The filter measures RMS over each aligned bite window after mono conversion,
-16 kHz resampling, and DC removal. Loud audio elsewhere in the buffer cannot
-raise that window's level. The fingerprint score and playback-rate matching
-still apply. This is a recorded sound level, not a perceptual loudness measure.
-
-The three supplied false-positive recordings trigger the original matcher:
-the first two match Bite 4 and the third matches Bite 1. False positives 2 and 3
-have approximately 0.98 waveform correlation with those references after speed
-correction, but are approximately 36-38 dB quieter. With the same game volume
-used for all recordings, the level filter distinguishes these quiet background
-copies. The real bite recordings measure about -32 to -22 dBFS RMS in their
-matched windows; the false matches are below -53 dBFS at full reference length.
-See [the false-positive analysis](../reports/false_positive_analysis.md).
-
-For a quiet game or different audio setup, lower the limit or deactivate
-**Use Volume Filter** if real bites are missed. This absolute limit cannot
-automatically adapt to changes in game or Windows volume. A loud overlapping
-sound inside the matched window can also raise its RMS; this is not a universal
-rejection of other players' sounds.
-
-The CLI exposes both controls:
-
-```powershell
-.\.venv\Scripts\python.exe listen.py --file sounds\validation\false-positive2.wav --debug
-.\.venv\Scripts\python.exe listen.py --min-level-dbfs -50 --debug
-.\.venv\Scripts\python.exe listen.py --no-level-filter --debug
-```
-
-Debug output shows the candidate's `level=...dBFS` and labels candidates below
-the minimum level, even when their fingerprint scores exceed the threshold.
+Matching uses sound fingerprints without a minimum recording-level filter,
+so quieter bites use the same detection criteria. Older settings files can
+still be loaded; retired volume-filter preferences are discarded on the next save.
 
 The provisional threshold is **0.40**, raised from 0.30 because searching more
 rates creates more opportunities for accidental matches. A score is the fraction of reference
