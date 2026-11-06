@@ -5,7 +5,7 @@ from threading import Event, Thread
 import time
 from types import SimpleNamespace
 import unittest
-from unittest.mock import Mock, patch
+from unittest.mock import Mock, call, patch
 
 from app_settings import load, save, validate
 from audio_io import Capture
@@ -274,6 +274,16 @@ class SettingsTests(unittest.TestCase):
             self.assertFalse(cfg["USE_BITE_LEVEL_FILTER"])
             self.assertEqual(cfg["MIN_BITE_LEVEL_DBFS"], -55)
 
+    def test_umlaut_keys_are_normalized_and_saved(self):
+        with TemporaryDirectory() as directory:
+            path = Path(directory) / "settings.yaml"
+            for key in "äöüÄÖÜ":
+                with self.subTest(key=key):
+                    cfg = save(path, {"ACTION_KEY": f" {key} ", "LURE_KEY": key})
+                    self.assertEqual(cfg["ACTION_KEY"], key.lower())
+                    self.assertEqual(cfg["LURE_KEY"], key.lower())
+                    self.assertEqual(load(path), cfg)
+
     def test_invalid_settings_rejected(self):
         for values in ({"ACTION_KEY": "ctrl+k"}, {"WAIT_AFTER_NOT_FOUND": [3, 1]},
                        {"THRESHOLD": float("nan")}, {"USE_LURE": "false"},
@@ -294,6 +304,62 @@ class SettingsTests(unittest.TestCase):
 
 
 class KeyboardTests(unittest.TestCase):
+    def setUp(self):
+        self.gui = Mock()
+        self.gui.IsWindow.return_value = True
+        self.gui.IsIconic.return_value = False
+        self.gui.GetWindowText.return_value = "World of Warcraft"
+        self.gui.GetForegroundWindow.return_value = 123
+        self.process = Mock()
+        self.process.GetWindowThreadProcessId.return_value = (17, 44)
+        self.api = Mock()
+        self.api.GetKeyboardLayout.return_value = 987
+        self.autogui = Mock()
+        modules = patch.dict("sys.modules", {"win32gui": self.gui, "win32process": self.process,
+                                           "win32api": self.api, "pyautogui": self.autogui})
+        modules.start()
+        self.addCleanup(modules.stop)
+        self.keyboard = Keyboard(GameWindow(123, 44, "World of Warcraft"))
+
+    def test_umlauts_send_layout_specific_key_down_and_up(self):
+        from win32con import KEYEVENTF_KEYUP
+
+        for key, key_code in (("ä", 0xde), ("ö", 0xba), ("ü", 0xc0)):
+            with self.subTest(key=key):
+                self.api.reset_mock()
+                self.api.VkKeyScanEx.return_value = key_code
+                self.assertTrue(self.keyboard.press(key, lambda: False, Mock()))
+                self.api.GetKeyboardLayout.assert_called_once_with(17)
+                self.api.VkKeyScanEx.assert_called_once_with(key, 987)
+                self.assertEqual(self.api.keybd_event.call_args_list,
+                                 [call(key_code, 0, 0, 0), call(key_code, 0, KEYEVENTF_KEYUP, 0)])
+        self.assertEqual(self.autogui.failSafeCheck.call_count, 3)
+        self.autogui.press.assert_not_called()
+
+    def test_unavailable_or_modified_umlaut_is_not_sent(self):
+        for key_code in (-1, 0x01de, 0x06de):
+            with self.subTest(key_code=key_code):
+                self.api.VkKeyScanEx.return_value = key_code
+                with self.assertRaisesRegex(RuntimeError, "keyboard layout"):
+                    self.keyboard.press("ä", lambda: False, Mock())
+                self.api.keybd_event.assert_not_called()
+        self.autogui.press.assert_not_called()
+
+    def test_umlaut_preserves_failsafe_and_cancellation(self):
+        self.api.VkKeyScanEx.return_value = 0xde
+        self.autogui.failSafeCheck.side_effect = RuntimeError("Fail-safe triggered")
+        with self.assertRaisesRegex(RuntimeError, "Fail-safe triggered"):
+            self.keyboard.press("ä", lambda: False, Mock())
+        self.assertFalse(self.keyboard.press("ä", lambda: True, Mock()))
+        self.api.keybd_event.assert_not_called()
+        self.autogui.press.assert_not_called()
+
+    def test_standard_keys_still_use_pyautogui(self):
+        self.assertTrue(self.keyboard.press("k", lambda: False, Mock()))
+        self.autogui.press.assert_called_once_with("k", _pause=False)
+        self.api.keybd_event.assert_not_called()
+        self.api.VkKeyScanEx.assert_not_called()
+
     def test_unfocused_or_replaced_window_does_not_receive_keys(self):
         for valid, pid, foreground in ((False, 44, 123), (True, 99, 123), (True, 44, 999)):
             with self.subTest(valid=valid, pid=pid, foreground=foreground):

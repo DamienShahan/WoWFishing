@@ -14,7 +14,9 @@ _The real application with sample activity for illustration._
 Install and enable [Better Fishing](https://www.curseforge.com/wow/addons/better-fishing).
 In WoW, go to **Settings → Keybindings → Better Fishing → Cast and Interact**
 and bind a key, such as `K`. This lets the same key cast and reel in.
-Set WoWFishing's **Action key** to that same key.
+Set WoWFishing's **Action key** to that same key. Both action and lure
+keys support `ä`, `ö`, and `ü` when available as single keys on WoW's
+active keyboard layout.
 
 ### Lure macro (optional)
 
@@ -39,8 +41,9 @@ window. You can skip this macro when **Use lure** is off.
 1. **Open the app.** Extract the entire `WoWFishing-Windows.zip`, then
    launch `WoWFishing.exe`. Keep the `_internal` folder beside it. No Python
    installation is needed.
-2. **Prepare WoW.** Complete the [game prerequisites](#game-prerequisites),
-   stand at a fishing spot, and make sure the game sound is audible.
+2. **Prepare WoW.** Complete the [game prerequisites](#game-prerequisites)
+   and stand at a fishing spot. Press **Ctrl + S** in WoW to disable sound
+   effects and reduce game audio noise.
 3. **Choose your window and audio.** Select your WoW window and the audio output
    playing the game. Use **Refresh windows & devices** if either is missing.
 
@@ -83,7 +86,7 @@ Open **Settings** for:
 | **Lure cast wait** / **Lure interval** | How long to wait for a lure to finish, and how often to reapply it.                                                     |
 | **Cast timeout**                       | How long to listen before trying another cast. Default: 23 seconds.                                                     |
 | **Detection threshold**                | How strong a sound match must be. Start with the default of `0.40`; a higher value requires a stronger match.           |
-| **Use Volume Filter**                 | Reduces false positives. Deactivate if you are missing bites. Enabled by default.                                       |
+| **Use Volume Filter**                  | Reduces false positives. Deactivate if you are missing bites. Enabled by default.                                       |
 | **Minimum bite level (dBFS)**          | Minimum RMS level in a matched bite window. Default: `-42`; more negative values allow quieter bites.                   |
 
 Your choices are saved for the next launch. Packaged releases store settings in

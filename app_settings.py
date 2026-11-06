@@ -20,7 +20,8 @@ DEFAULTS = {
     "USE_BITE_LEVEL_FILTER": True,
     "STOP_AUTOMATICALLY": False, "STOP_AFTER_MINUTES": 30.0,
 }
-KEYS = set("abcdefghijklmnopqrstuvwxyz0123456789") | {
+UMLAUT_KEYS = frozenset("äöü")
+KEYS = set("abcdefghijklmnopqrstuvwxyz0123456789") | UMLAUT_KEYS | {
     "space", "enter", "tab", "esc", "up", "down", "left", "right",
     "home", "end", "pageup", "pagedown", "insert", "delete",
 } | {f"f{i}" for i in range(1, 25)}
@@ -43,7 +44,7 @@ def validate(values):
     cfg.update(values)
     for name in ("ACTION_KEY", "LURE_KEY"):
         if not isinstance(cfg[name], str) or cfg[name].strip().lower() not in KEYS:
-            raise ValueError(f"{name}: use one key, such as k, space, or f5.")
+            raise ValueError(f"{name}: use one key, such as k, ö, space, or f5.")
         cfg[name] = cfg[name].strip().lower()
     for name in ("USE_LURE", "STOP_AUTOMATICALLY", "USE_BITE_LEVEL_FILTER"):
         if type(cfg[name]) is not bool:

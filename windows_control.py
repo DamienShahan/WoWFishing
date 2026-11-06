@@ -1,6 +1,8 @@
 """Visible WoW windows and checked foreground keyboard input (Windows only)."""
 from dataclasses import dataclass
 
+from app_settings import UMLAUT_KEYS
+
 
 @dataclass(frozen=True)
 class GameWindow:
@@ -55,6 +57,21 @@ class Keyboard:
             return False
         if win32gui.GetForegroundWindow() != hwnd:
             raise RuntimeError("WoW is not in the foreground; no key was sent.")
-        # Keep PyAutoGUI's corner fail-safe enabled. No held modifier keys.
-        pyautogui.press(key, _pause=False)
+        # PyAutoGUI only maps ASCII characters on Windows. Resolve umlauts
+        # against the game's layout and send the corresponding physical key.
+        if key in UMLAUT_KEYS:
+            import win32api
+            thread_id, _ = win32process.GetWindowThreadProcessId(hwnd)
+            layout = win32api.GetKeyboardLayout(thread_id)
+            key_code = win32api.VkKeyScanEx(key, layout)
+            if key_code == -1 or key_code >> 8:
+                raise RuntimeError(f"The key '{key.upper()}' is not available as a single key on WoW's keyboard layout.")
+            pyautogui.failSafeCheck()
+            try:
+                win32api.keybd_event(key_code, 0, 0, 0)
+            finally:
+                win32api.keybd_event(key_code, 0, win32con.KEYEVENTF_KEYUP, 0)
+        else:
+            # Keep PyAutoGUI's corner fail-safe enabled. No held modifier keys.
+            pyautogui.press(key, _pause=False)
         return True
