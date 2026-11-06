@@ -94,6 +94,29 @@ class GuiTests(unittest.TestCase):
                 self.assertEqual(self.app.start_button.cget("state"), "normal")
         self.assertEqual(len(sessions), 2)
 
+    def test_quiet_bite_filter_checkbox_is_saved_and_reopened(self):
+        self.app.open_settings()
+        dialog = self.app.dialog
+        self.pump(.15)
+        self.assertTrue(dialog.level_filter_var.get())
+        entry = dialog.entries["MIN_BITE_LEVEL_DBFS"][0]
+        entry.delete(0, "end")
+        entry.insert(0, "-55")
+        dialog.level_filter_var.set(False)
+        dialog.update_level_filter()
+        self.assertEqual(entry.cget("state"), "disabled")
+        dialog.commit()
+        self.assertFalse(load(self.path)["USE_BITE_LEVEL_FILTER"])
+        self.assertEqual(load(self.path)["MIN_BITE_LEVEL_DBFS"], -55)
+        self.app.open_settings()
+        dialog = self.app.dialog
+        self.assertFalse(dialog.level_filter_var.get())
+        dialog.level_filter_var.set(True)
+        dialog.update_level_filter()
+        self.assertEqual(dialog.entries["MIN_BITE_LEVEL_DBFS"][0].cget("state"), "normal")
+        dialog.commit()
+        self.assertTrue(load(self.path)["USE_BITE_LEVEL_FILTER"])
+
     def test_missing_saved_device_needs_explicit_selection(self):
         self.app.settings["OUTPUT_DEVICE_NAME"] = "Disconnected output"
         self.app.settings["OUTPUT_DEVICE_INDEX"] = 99
