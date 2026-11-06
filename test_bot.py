@@ -93,6 +93,7 @@ class BotTests(unittest.TestCase):
         bot.run()
         self.assertEqual([path.name for path in bot.detector_factory.call_args.args[0]],
                          ["bite1.wav", "bite2.wav", "bite4.wav", "bite10.wav"])
+        self.assertEqual(bot.detector_factory.call_args.kwargs["min_level_dbfs"], -42.0)
         self.assertEqual(self.keys, ["k"] * 4)
         self.assertEqual((bot.casts, bot.bites), (2, 2))
         self.assertEqual(self.backend.captures, 2)
@@ -118,6 +119,14 @@ class BotTests(unittest.TestCase):
         bot.run()
         self.assertEqual(self.keys, ["f5", "k", "k", "f5", "k", "k"])
         self.assert_summary(casts=2, bites=2, lures=2)
+
+    def test_level_filter_setting_reaches_detector(self):
+        for enabled, expected in ((True, -50.0), (False, None)):
+            with self.subTest(enabled=enabled):
+                bot = self.session(USE_BITE_LEVEL_FILTER=enabled, MIN_BITE_LEVEL_DBFS=-50)
+                self.backend.read_hook = bot.stop
+                bot.run()
+                self.assertEqual(bot.detector_factory.call_args.kwargs["min_level_dbfs"], expected)
 
     def test_stop_during_capture_prevents_reel(self):
         bot = self.session()
@@ -258,13 +267,18 @@ class SettingsTests(unittest.TestCase):
     def test_round_trip(self):
         with TemporaryDirectory() as directory:
             path = Path(directory) / "settings.yaml"
-            cfg = save(path, {"ACTION_KEY": "F2", "WAIT_AFTER_NOT_FOUND": [1, 2]})
+            cfg = save(path, {"ACTION_KEY": "F2", "WAIT_AFTER_NOT_FOUND": [1, 2],
+                              "USE_BITE_LEVEL_FILTER": False, "MIN_BITE_LEVEL_DBFS": -55})
             self.assertEqual(load(path), cfg)
             self.assertEqual(cfg["ACTION_KEY"], "f2")
+            self.assertFalse(cfg["USE_BITE_LEVEL_FILTER"])
+            self.assertEqual(cfg["MIN_BITE_LEVEL_DBFS"], -55)
 
     def test_invalid_settings_rejected(self):
         for values in ({"ACTION_KEY": "ctrl+k"}, {"WAIT_AFTER_NOT_FOUND": [3, 1]},
                        {"THRESHOLD": float("nan")}, {"USE_LURE": "false"},
+                       {"USE_BITE_LEVEL_FILTER": "false"}, {"MIN_BITE_LEVEL_DBFS": 1},
+                       {"MIN_BITE_LEVEL_DBFS": -121}, {"MIN_BITE_LEVEL_DBFS": float("nan")},
                        {"STOP_AFTER_MINUTES": 0}, {"OUTPUT_DEVICE_INDEX": True},
                        {"WOW_TITLE_REGEX": "["}, {"UNKNOWN": 1}, {"LURE_WAIT_TIME": [-1, 2]}):
             with self.subTest(values=values), self.assertRaises(ValueError):

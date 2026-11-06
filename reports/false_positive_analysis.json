@@ -1,0 +1,694 @@
+{
+  "date": "2026-11-06",
+  "branch": "false-positive-handling",
+  "conclusion": "Gain-invariant fingerprint matches accept very quiet background copies of bite effects; a configurable aligned-window RMS minimum rejects the supplied false positives.",
+  "user_context": "The game volume was the same for all supplied recordings; the false-positive sounds were very quiet in-game background noise.",
+  "minimum_level_dbfs": -42.0,
+  "normal_level_range_dbfs": [
+    -31.55224728767509,
+    -22.437951701057447
+  ],
+  "comparison_method": "8kHz mono, 250-3000Hz bandpass; 300ms energetic reference excerpt searched over playback rates 0.88-1.12, with long-overlap refinement for strong candidates. False-positive1 contains a highly similar excerpt, but its whole clip does not verify as a simple gain/speed copy.",
+  "comparisons": [
+    {
+      "clip": "false-positive1.wav",
+      "reference": "bite1.wav",
+      "best_excerpt": 0.1821768845212602,
+      "verified": null
+    },
+    {
+      "clip": "false-positive1.wav",
+      "reference": "bite2.wav",
+      "best_excerpt": 0.16022949583538096,
+      "verified": null
+    },
+    {
+      "clip": "false-positive1.wav",
+      "reference": "bite4.wav",
+      "best_excerpt": 0.9571321281518769,
+      "verified": {
+        "speed": 1.0475999999999974,
+        "correlation": 0.11308627725872666,
+        "overlap_seconds": 1.916,
+        "lag_seconds": -0.126375,
+        "gain_db": -48.76766449907664
+      }
+    },
+    {
+      "clip": "false-positive1.wav",
+      "reference": "bite10.wav",
+      "best_excerpt": 0.1612342294879048,
+      "verified": null
+    },
+    {
+      "clip": "false-positive2.wav",
+      "reference": "bite1.wav",
+      "best_excerpt": 0.17912653668139403,
+      "verified": null
+    },
+    {
+      "clip": "false-positive2.wav",
+      "reference": "bite2.wav",
+      "best_excerpt": 0.17917793926270634,
+      "verified": null
+    },
+    {
+      "clip": "false-positive2.wav",
+      "reference": "bite4.wav",
+      "best_excerpt": 0.8803318942353584,
+      "verified": {
+        "speed": 1.1057749999999973,
+        "correlation": 0.9780638070913439,
+        "overlap_seconds": 1.81525,
+        "lag_seconds": -0.086125,
+        "gain_db": -36.056537018815476
+      }
+    },
+    {
+      "clip": "false-positive2.wav",
+      "reference": "bite10.wav",
+      "best_excerpt": 0.18466380833673898,
+      "verified": null
+    },
+    {
+      "clip": "false-positive3.wav",
+      "reference": "bite1.wav",
+      "best_excerpt": 0.8842675432121815,
+      "verified": {
+        "speed": 0.9316250000000046,
+        "correlation": 0.9789657846612103,
+        "overlap_seconds": 2.099,
+        "lag_seconds": 0.033625,
+        "gain_db": -38.02133750484016
+      }
+    },
+    {
+      "clip": "false-positive3.wav",
+      "reference": "bite2.wav",
+      "best_excerpt": 0.15957795361387267,
+      "verified": null
+    },
+    {
+      "clip": "false-positive3.wav",
+      "reference": "bite4.wav",
+      "best_excerpt": 0.15612008005727993,
+      "verified": null
+    },
+    {
+      "clip": "false-positive3.wav",
+      "reference": "bite10.wav",
+      "best_excerpt": 0.16556889677201486,
+      "verified": null
+    }
+  ],
+  "baseline": [
+    {
+      "file": "false-positive1.wav",
+      "duration": null,
+      "samplerate": 48000,
+      "channels": 1,
+      "seconds": 2.907625,
+      "peak_dbfs": -29.386902954273584,
+      "events": [
+        {
+          "name": "bite4.wav",
+          "score": 0.4397905759162304,
+          "anchors": 84,
+          "span": 1.2641509433962264,
+          "start": 0.13,
+          "end": 2.023573113207547,
+          "speed": 1.06,
+          "capture_seconds": 2.0
+        }
+      ],
+      "best": [
+        {
+          "name": "bite1.wav",
+          "score": 0.2,
+          "anchors": 28,
+          "span": 0.9150943396226414,
+          "start": -0.04,
+          "end": 1.4042216981132074,
+          "speed": 1.06
+        },
+        {
+          "name": "bite10.wav",
+          "score": 0.17419354838709677,
+          "anchors": 27,
+          "span": 1.1574074074074074,
+          "start": 0.16,
+          "end": 1.7660763888888886,
+          "speed": 1.08
+        },
+        {
+          "name": "bite2.wav",
+          "score": 0.15428571428571428,
+          "anchors": 27,
+          "span": 0.9615384615384615,
+          "start": 0.34,
+          "end": 2.177019230769231,
+          "speed": 1.04
+        },
+        {
+          "name": "bite4.wav",
+          "score": 0.4397905759162304,
+          "anchors": 84,
+          "span": 1.2641509433962264,
+          "start": 0.13,
+          "end": 2.023573113207547,
+          "speed": 1.06
+        }
+      ],
+      "offset_matches": [
+        {
+          "name": "bite4.wav",
+          "score": 0.4293193717277487,
+          "anchors": 82,
+          "span": 1.7766990291262137,
+          "start": 0.49,
+          "end": 2.43872572815534,
+          "speed": 1.03
+        },
+        {
+          "name": "bite10.wav",
+          "score": 0.23870967741935484,
+          "anchors": 37,
+          "span": 1.1442307692307692,
+          "start": 0.38,
+          "end": 2.0478485576923076,
+          "speed": 1.04
+        },
+        {
+          "name": "bite1.wav",
+          "score": 0.22142857142857142,
+          "anchors": 31,
+          "span": 1.061855670103093,
+          "start": 0.22,
+          "end": 1.798221649484536,
+          "speed": 0.9700000000000001
+        },
+        {
+          "name": "bite2.wav",
+          "score": 0.18857142857142858,
+          "anchors": 33,
+          "span": 1.0439560439560438,
+          "start": 0.67,
+          "end": 2.7694505494505495,
+          "speed": 0.91
+        }
+      ]
+    },
+    {
+      "file": "false-positive2.wav",
+      "duration": null,
+      "samplerate": 48000,
+      "channels": 1,
+      "seconds": 2.5185208333333335,
+      "peak_dbfs": -42.17819509051526,
+      "events": [
+        {
+          "name": "bite4.wav",
+          "score": 0.675392670157068,
+          "anchors": 129,
+          "span": 1.6576576576576576,
+          "start": 0.1,
+          "end": 1.908277027027027,
+          "speed": 1.11,
+          "capture_seconds": 1.9
+        }
+      ],
+      "best": [
+        {
+          "name": "bite1.wav",
+          "score": 0.2357142857142857,
+          "anchors": 33,
+          "span": 1.3300970873786409,
+          "start": 0.46,
+          "end": 1.9462864077669901,
+          "speed": 1.03
+        },
+        {
+          "name": "bite10.wav",
+          "score": 0.2645161290322581,
+          "anchors": 41,
+          "span": 1.4226804123711339,
+          "start": 0.43,
+          "end": 2.2182087628865976,
+          "speed": 0.9700000000000001
+        },
+        {
+          "name": "bite2.wav",
+          "score": 0.25142857142857145,
+          "anchors": 44,
+          "span": 1.4999999999999998,
+          "start": 0.58,
+          "end": 2.6124468085106383,
+          "speed": 0.9400000000000001
+        },
+        {
+          "name": "bite4.wav",
+          "score": 0.675392670157068,
+          "anchors": 129,
+          "span": 1.6576576576576576,
+          "start": 0.1,
+          "end": 1.908277027027027,
+          "speed": 1.11
+        }
+      ],
+      "offset_matches": [
+        {
+          "name": "bite4.wav",
+          "score": 0.6230366492146597,
+          "anchors": 119,
+          "span": 1.6846846846846846,
+          "start": 0.46,
+          "end": 2.268277027027027,
+          "speed": 1.11
+        },
+        {
+          "name": "bite1.wav",
+          "score": 0.2785714285714286,
+          "anchors": 39,
+          "span": 1.3300970873786409,
+          "start": 0.85,
+          "end": 2.3362864077669903,
+          "speed": 1.03
+        },
+        {
+          "name": "bite10.wav",
+          "score": 0.23225806451612904,
+          "anchors": 36,
+          "span": 1.22680412371134,
+          "start": 0.8,
+          "end": 2.5882087628865977,
+          "speed": 0.9700000000000001
+        },
+        {
+          "name": "bite2.wav",
+          "score": 0.21142857142857144,
+          "anchors": 37,
+          "span": 1.5652173913043477,
+          "start": 0.93,
+          "end": 3.006630434782609,
+          "speed": 0.92
+        }
+      ]
+    },
+    {
+      "file": "false-positive3.wav",
+      "duration": null,
+      "samplerate": 48000,
+      "channels": 1,
+      "seconds": 2.3614375,
+      "peak_dbfs": -44.159077940930096,
+      "events": [
+        {
+          "name": "bite1.wav",
+          "score": 0.65,
+          "anchors": 91,
+          "span": 1.4574468085106382,
+          "start": 0.11,
+          "end": 1.738590425531915,
+          "speed": 0.9400000000000001,
+          "capture_seconds": 1.7
+        }
+      ],
+      "best": [
+        {
+          "name": "bite1.wav",
+          "score": 0.6857142857142857,
+          "anchors": 96,
+          "span": 1.4891304347826086,
+          "start": 0.11,
+          "end": 1.7739945652173914,
+          "speed": 0.92
+        },
+        {
+          "name": "bite10.wav",
+          "score": 0.2129032258064516,
+          "anchors": 33,
+          "span": 1.5051546391752575,
+          "start": 0.26,
+          "end": 2.0482087628865977,
+          "speed": 0.9700000000000001
+        },
+        {
+          "name": "bite2.wav",
+          "score": 0.18285714285714286,
+          "anchors": 32,
+          "span": 1.6428571428571428,
+          "start": 0.27,
+          "end": 2.2194897959183675,
+          "speed": 0.98
+        },
+        {
+          "name": "bite4.wav",
+          "score": 0.2513089005235602,
+          "anchors": 48,
+          "span": 1.8080808080808082,
+          "start": 0.13,
+          "end": 2.1574621212121214,
+          "speed": 0.99
+        }
+      ],
+      "offset_matches": [
+        {
+          "name": "bite1.wav",
+          "score": 0.5928571428571429,
+          "anchors": 83,
+          "span": 1.4193548387096775,
+          "start": 0.49,
+          "end": 2.136102150537634,
+          "speed": 0.93
+        },
+        {
+          "name": "bite4.wav",
+          "score": 0.2513089005235602,
+          "anchors": 48,
+          "span": 1.6923076923076925,
+          "start": 0.17,
+          "end": 2.3757005494505496,
+          "speed": 0.91
+        },
+        {
+          "name": "bite2.wav",
+          "score": 0.22857142857142856,
+          "anchors": 40,
+          "span": 1.4086021505376345,
+          "start": 0.82,
+          "end": 2.874301075268817,
+          "speed": 0.93
+        },
+        {
+          "name": "bite10.wav",
+          "score": 0.2129032258064516,
+          "anchors": 33,
+          "span": 1.1386138613861385,
+          "start": 1.3,
+          "end": 3.017388613861386,
+          "speed": 1.01
+        }
+      ]
+    },
+    {
+      "file": "false-positive1.wav",
+      "duration": 1.0,
+      "samplerate": 48000,
+      "channels": 1,
+      "seconds": 2.907625,
+      "peak_dbfs": -29.386902954273584,
+      "events": [
+        {
+          "name": "bite4.wav",
+          "score": 0.48863636363636365,
+          "anchors": 43,
+          "span": 0.6545454545454544,
+          "start": 0.13,
+          "end": 1.039090909090909,
+          "speed": 1.1,
+          "capture_seconds": 1.0
+        }
+      ],
+      "best": [
+        {
+          "name": "bite4.wav",
+          "score": 0.6931818181818182,
+          "anchors": 61,
+          "span": 0.8173076923076922,
+          "start": 0.12,
+          "end": 1.0815384615384613,
+          "speed": 1.04
+        },
+        {
+          "name": "bite1.wav",
+          "score": 0.2857142857142857,
+          "anchors": 26,
+          "span": 0.934065934065934,
+          "start": 0.5,
+          "end": 1.5989010989010988,
+          "speed": 0.91
+        },
+        {
+          "name": "bite2.wav",
+          "score": 0.29347826086956524,
+          "anchors": 27,
+          "span": 0.5963302752293578,
+          "start": 0.61,
+          "end": 1.5274311926605504,
+          "speed": 1.09
+        },
+        {
+          "name": "bite10.wav",
+          "score": 0.3146067415730337,
+          "anchors": 28,
+          "span": 0.784313725490196,
+          "start": 0.7336458333333333,
+          "end": 1.7140379901960783,
+          "speed": 1.02
+        }
+      ],
+      "offset_matches": [
+        {
+          "name": "bite4.wav",
+          "score": 0.6022727272727273,
+          "anchors": 53,
+          "span": 0.7669902912621359,
+          "start": 0.49,
+          "end": 1.460873786407767,
+          "speed": 1.03
+        },
+        {
+          "name": "bite2.wav",
+          "score": 0.33695652173913043,
+          "anchors": 31,
+          "span": 0.6666666666666666,
+          "start": 0.97,
+          "end": 1.8959259259259258,
+          "speed": 1.08
+        },
+        {
+          "name": "bite1.wav",
+          "score": 0.25274725274725274,
+          "anchors": 23,
+          "span": 0.657142857142857,
+          "start": 0.96,
+          "end": 1.9123809523809523,
+          "speed": 1.05
+        },
+        {
+          "name": "bite10.wav",
+          "score": 0.24719101123595505,
+          "anchors": 22,
+          "span": 0.5809523809523809,
+          "start": 0.62,
+          "end": 1.5723809523809522,
+          "speed": 1.05
+        }
+      ]
+    },
+    {
+      "file": "false-positive2.wav",
+      "duration": 1.0,
+      "samplerate": 48000,
+      "channels": 1,
+      "seconds": 2.5185208333333335,
+      "peak_dbfs": -42.17819509051526,
+      "events": [
+        {
+          "name": "bite4.wav",
+          "score": 0.6704545454545454,
+          "anchors": 59,
+          "span": 0.7636363636363636,
+          "start": 0.08,
+          "end": 0.989090909090909,
+          "speed": 1.1,
+          "capture_seconds": 1.0
+        }
+      ],
+      "best": [
+        {
+          "name": "bite4.wav",
+          "score": 0.6704545454545454,
+          "anchors": 59,
+          "span": 0.7636363636363636,
+          "start": 0.08,
+          "end": 0.989090909090909,
+          "speed": 1.1
+        },
+        {
+          "name": "bite2.wav",
+          "score": 0.33695652173913043,
+          "anchors": 31,
+          "span": 0.8571428571428571,
+          "start": 0.35,
+          "end": 1.370408163265306,
+          "speed": 0.98
+        },
+        {
+          "name": "bite1.wav",
+          "score": 0.24175824175824176,
+          "anchors": 22,
+          "span": 0.79,
+          "start": 0.14,
+          "end": 1.1400000000000001,
+          "speed": 1.0
+        },
+        {
+          "name": "bite10.wav",
+          "score": 0.34831460674157305,
+          "anchors": 31,
+          "span": 0.8453608247422679,
+          "start": 0.44,
+          "end": 1.4709278350515462,
+          "speed": 0.9700000000000001
+        }
+      ],
+      "offset_matches": [
+        {
+          "name": "bite4.wav",
+          "score": 0.6363636363636364,
+          "anchors": 56,
+          "span": 0.7117117117117117,
+          "start": 0.46,
+          "end": 1.3609009009009008,
+          "speed": 1.11
+        },
+        {
+          "name": "bite10.wav",
+          "score": 0.3258426966292135,
+          "anchors": 29,
+          "span": 0.8247422680412371,
+          "start": 0.8,
+          "end": 1.8309278350515463,
+          "speed": 0.9700000000000001
+        },
+        {
+          "name": "bite2.wav",
+          "score": 0.30434782608695654,
+          "anchors": 28,
+          "span": 0.846938775510204,
+          "start": 0.74,
+          "end": 1.7604081632653061,
+          "speed": 0.98
+        },
+        {
+          "name": "bite1.wav",
+          "score": 0.27472527472527475,
+          "anchors": 25,
+          "span": 0.8064516129032259,
+          "start": 0.79,
+          "end": 1.865268817204301,
+          "speed": 0.93
+        }
+      ]
+    },
+    {
+      "file": "false-positive3.wav",
+      "duration": 1.0,
+      "samplerate": 48000,
+      "channels": 1,
+      "seconds": 2.3614375,
+      "peak_dbfs": -44.159077940930096,
+      "events": [
+        {
+          "name": "bite1.wav",
+          "score": 0.7362637362637363,
+          "anchors": 67,
+          "span": 0.967391304347826,
+          "start": 0.11,
+          "end": 1.1969565217391305,
+          "speed": 0.92,
+          "capture_seconds": 1.2
+        }
+      ],
+      "best": [
+        {
+          "name": "bite4.wav",
+          "score": 0.3181818181818182,
+          "anchors": 28,
+          "span": 0.8494623655913978,
+          "start": 0.5536458333333333,
+          "end": 1.6289146505376344,
+          "speed": 0.93
+        },
+        {
+          "name": "bite1.wav",
+          "score": 0.7362637362637363,
+          "anchors": 67,
+          "span": 0.967391304347826,
+          "start": 0.11,
+          "end": 1.1969565217391305,
+          "speed": 0.92
+        },
+        {
+          "name": "bite10.wav",
+          "score": 0.3258426966292135,
+          "anchors": 29,
+          "span": 0.7222222222222221,
+          "start": 0.9236458333333334,
+          "end": 2.0347569444444447,
+          "speed": 0.9
+        },
+        {
+          "name": "bite2.wav",
+          "score": 0.30434782608695654,
+          "anchors": 28,
+          "span": 0.9213483146067415,
+          "start": 0.6936458333333333,
+          "end": 1.817241338951311,
+          "speed": 0.89
+        }
+      ],
+      "offset_matches": [
+        {
+          "name": "bite1.wav",
+          "score": 0.6373626373626373,
+          "anchors": 58,
+          "span": 0.9473684210526315,
+          "start": 0.49,
+          "end": 1.5426315789473684,
+          "speed": 0.9500000000000001
+        },
+        {
+          "name": "bite4.wav",
+          "score": 0.32954545454545453,
+          "anchors": 29,
+          "span": 0.8426966292134832,
+          "start": 0.7,
+          "end": 1.8235955056179776,
+          "speed": 0.89
+        },
+        {
+          "name": "bite2.wav",
+          "score": 0.2826086956521739,
+          "anchors": 26,
+          "span": 0.83,
+          "start": 0.99,
+          "end": 1.99,
+          "speed": 1.0
+        },
+        {
+          "name": "bite10.wav",
+          "score": 0.2808988764044944,
+          "anchors": 25,
+          "span": 1.0,
+          "start": 0.66,
+          "end": 1.7835955056179778,
+          "speed": 0.89
+        }
+      ]
+    }
+  ],
+  "unit_tests": {
+    "command": "python -m unittest test_fingerprint test_bot test_gui -v",
+    "passed": 38
+  },
+  "validation_summary": {
+    "real_bite_streams_passed": 48,
+    "real_bite_streams_total": 48,
+    "false_positive_streams_rejected": 12,
+    "false_positive_streams_total": 12,
+    "disabled_filter_false_detections": 6,
+    "disabled_filter_controls": 6
+  }
+}
