@@ -75,13 +75,14 @@ In the main window:
 
 Open **Settings** for:
 
-| Setting                                | What it does                                                                                                  |
-| -------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
-| **Action key** / **Lure key**          | Match your in-game fishing action and lure macro. Defaults: `K` / `F5`.                                       |
-| **After a bite** / **After timeout**   | Minimum and maximum pause before the next cast.                                                               |
-| **Lure cast wait** / **Lure interval** | How long to wait for a lure to finish, and how often to reapply it.                                           |
-| **Cast timeout**                       | How long to listen before trying another cast. Default: 23 seconds.                                           |
-| **Detection threshold**                | How strong a sound match must be. Start with the default of `0.40`; a higher value requires a stronger match. |
+| Setting                                | What it does                                                                                                            |
+| -------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| **Action key** / **Lure key**          | Match your in-game fishing action and lure macro. Defaults: `K` / `F5`.                                                 |
+| **Wait after a catch**                 | Minimum and maximum random pause after reeling in, before the next cast (`WAIT_AFTER_TARGET_FOUND` in `settings.yaml`). |
+| **After timeout**                      | Minimum and maximum pause before retrying a cast without a detected bite (`WAIT_AFTER_NOT_FOUND`).                      |
+| **Lure cast wait** / **Lure interval** | How long to wait for a lure to finish, and how often to reapply it.                                                     |
+| **Cast timeout**                       | How long to listen before trying another cast. Default: 23 seconds.                                                     |
+| **Detection threshold**                | How strong a sound match must be. Start with the default of `0.40`; a higher value requires a stronger match.           |
 
 Your choices are saved for the next launch. Packaged releases store settings in
 `%APPDATA%\WoWFishing\settings.yaml`, so they survive replacing the app folder.
