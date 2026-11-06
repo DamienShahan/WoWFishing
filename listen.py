@@ -6,7 +6,7 @@ import time
 import numpy as np
 import soundfile as sf
 
-from fingerprint import FingerprintDetector, StreamDetector
+from fingerprint import FingerprintDetector, StreamDetector, default_reference_paths
 
 
 def capture_backend():
@@ -20,7 +20,7 @@ def main():
     parser.add_argument("--list-devices", action="store_true")
     parser.add_argument("--device", type=int, help="WASAPI loopback index; default output if omitted")
     parser.add_argument("--file", type=Path, help="Scan a WAV instead of listening live")
-    parser.add_argument("--references", type=Path, nargs="+", help="Default: bite1.wav, bite2.wav, bite4.wav in sounds/target/ (one per splash group)")
+    parser.add_argument("--references", type=Path, nargs="+", help="Default: bite1.wav, bite2.wav, bite4.wav, bite10.wav in sounds/target/ (one per splash group)")
     parser.add_argument("--threshold", type=float, default=0.40, help="Anchor coverage, not probability (default: 0.40)")
     parser.add_argument("--speed-tolerance", type=float, default=0.12,
                         help="Fractional playback-rate range around 1.0 (default: 0.12 = +/-12%%; 0 disables)")
@@ -44,8 +44,7 @@ def main():
             for device in devices:
                 print(describe(device))
         return
-    folder = Path(__file__).resolve().parent / "sounds" / "target"
-    paths = args.references or [folder / f"bite{i}.wav" for i in (1, 2, 4)]
+    paths = args.references or default_reference_paths()
     detector = FingerprintDetector(paths, args.duration, args.threshold, args.min_anchors,
                                    args.speed_tolerance)
     print("Listen-only landmark detector. No keys are sent. Stop with Ctrl+C.")
