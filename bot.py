@@ -1,12 +1,11 @@
 """Cancellable fishing controller using the current landmark detector."""
-from pathlib import Path
 import random
 from threading import Event, Timer
 import time
 
 from app_settings import validate
 from audio_io import AudioBackend
-from fingerprint import FingerprintDetector, StreamDetector
+from fingerprint import FingerprintDetector, StreamDetector, default_reference_paths
 from windows_control import Keyboard
 
 
@@ -76,8 +75,7 @@ class BotSession:
             self.emit("state", "Starting")
             self.log("▶️ Starting fishing session. Loading bite sound references…",
                      kind="start", title="Getting ready to fish", body="Loading bite sounds and preparing your session.")
-            folder = Path(__file__).resolve().parent / "sounds" / "target"
-            detector = self.detector_factory([folder / f"bite{i}.wav" for i in (1, 2, 4)],
+            detector = self.detector_factory(default_reference_paths(),
                                              threshold=cfg["THRESHOLD"])
             if self.cancelled():
                 return

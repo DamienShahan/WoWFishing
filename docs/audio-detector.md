@@ -6,8 +6,8 @@ Commands below run from the project root.
 
 This script listens to Windows output audio and prints `BITE` when it finds an
 aligned landmark pattern from `sounds/target/bite1.wav`,
-`sounds/target/bite2.wav`, or `sounds/target/bite4.wav`
-(one representative of each of the three measured groups). It never
+`sounds/target/bite2.wav`, `sounds/target/bite4.wav`, or `sounds/target/bite10.wav`
+(one representative of each of the four measured groups). It never
 presses keys. Source WAVs are not changed, and live audio is not saved.
 
 The matcher now searches **0.88x through 1.12x playback speed**, allowing the
@@ -19,12 +19,19 @@ The sound files are organized as follows:
 
 ```text
 sounds/
-  target/        bite1.wav, bite2.wav, bite4.wav
-  validation/    bite3.wav, bite5.wav, bite6.wav, bite7.wav, bite8.wav, bite9.wav
+  target/        bite1.wav, bite2.wav, bite4.wav, bite10.wav
+  validation/    bite3.wav, bite5.wav, bite6.wav, bite7.wav, bite8.wav, bite9.wav,
+                 bite11.wav, bite12.wav
 ```
 
-Only the three references are loaded during normal listening. The tests and
+Only the four references are loaded during normal listening. The app, listener,
+and GUI self-check share the same default list. The tests and
 `compare_sounds.py` use both folders; validation clips add no live processing cost.
+
+Bite 10, Bite 11, and Bite 12 form the fourth group. Relative to Bite 10,
+Bite 11 is about 1.05% faster and 1.3 dB louder; Bite 12 is about 3.15% faster
+and 9.2 dB louder. Bite 10 was selected after comparing all three as references
+in clean and synthetic-noise checks. See [the new bite analysis](../reports/new_bite_analysis.md).
 
 ## Run from the project root
 
@@ -57,8 +64,8 @@ It stops if no audio buffers arrive for three seconds.
 Start with the defaults. Observe several real bites and ordinary sounds such as
 casting, water, and nearby effects. Note missed bites and detections when no bite
 occurred, along with the printed scores. Those observations matter more than the
-reference self-tests. The other six recordings are useful checks of whether the
-three references cover the observed playback-rate variants. Keep all nine WAVs.
+reference self-tests. The other eight recordings are useful checks of whether the
+four references cover the observed playback-rate variants. Keep all twelve WAVs.
 
 The provisional threshold is **0.40**, raised from 0.30 because searching more
 rates creates more opportunities for accidental matches. A score is the fraction of reference
@@ -77,7 +84,8 @@ If real bites are consistently detected, try reducing latency:
 ```
 
 This uses one second after each reference's automatically trimmed quiet lead-in.
-The default useful reference lengths are approximately 1.53, 1.91, and 2.01 seconds.
+The default useful reference lengths are approximately 1.53, 1.91, 2.01, and 1.73 seconds
+for Bite 1, Bite 2, Bite 4, and Bite 10 respectively.
 Full-reference detection waits roughly that long, plus the reference lead-in and
 capture/analysis delay, adjusted for the matched playback speed. `--duration 0.75` is another experiment, with potentially
 less distinctive evidence. Shortening the reference changes its score distribution;
@@ -100,6 +108,7 @@ that a match is correct. Override with `--cooldown SECONDS` if needed.
 .\.venv\Scripts\python.exe listen.py --file sounds\target\bite1.wav --debug
 .\.venv\Scripts\python.exe listen.py --file sounds\target\bite2.wav --debug
 .\.venv\Scripts\python.exe listen.py --file sounds\validation\bite8.wav --debug
+.\.venv\Scripts\python.exe listen.py --file sounds\validation\bite12.wav --debug
 .\.venv\Scripts\python.exe -m unittest discover -s . -p "test_*.py" -v
 ```
 
@@ -114,15 +123,23 @@ references, and simple negative signals. These are implementation checks, not
 evidence of generalization to unseen game sounds. The synthetic negatives do not
 measure the live false-positive rate.
 
-With the three default references, offline streaming detected each of the nine
+With the original three references, offline streaming detected each of the nine
 supplied clips once, both at full reference length and with `--duration 1.0`.
 The latter detected them roughly 0.9-1.1 seconds into the files. Full-length
 processing p95 was approximately 29-47 ms per 100 ms input block on this machine.
 These file-relative times are not measurements from the exact audible onset.
 See `reports/speed_aware_validation.json` for per-file results.
 
+With the four current references, offline streaming detected each of all twelve
+clips exactly once at full reference length and with `--duration 1.0`. All three
+new clips matched Bite 10. The new full-length detections occurred at 1.6-1.7 seconds
+into the files, and the one-second versions at 0.9-1.0 seconds. See
+`reports/four_reference_validation.json` for these results. These checks used
+16 kHz mono input in 100 ms blocks and 200 ms of end padding; the historical
+processing timings above have not been remeasured with four references.
+
 The eight regression tests additionally check equal-power white noise mixed into
-all nine clips, rejection of all nine reversed clips, synthetic playback rates
+all twelve clips, rejection of all twelve reversed clips, synthetic playback rates
 between search steps, and a variant missed when speed search is disabled. White
 noise is not a substitute for overlapping game sounds.
 

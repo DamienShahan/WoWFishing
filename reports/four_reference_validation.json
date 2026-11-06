@@ -1,0 +1,301 @@
+{
+  "references": [
+    "bite1.wav",
+    "bite2.wav",
+    "bite4.wav",
+    "bite10.wav"
+  ],
+  "sample_rate": 16000,
+  "block_seconds": 0.1,
+  "end_silence_seconds": 0.2,
+  "results": [
+    {
+      "file": "bite1.wav",
+      "duration": null,
+      "events": [
+        {
+          "reference": "bite1.wav",
+          "score": 0.5571428571428572,
+          "speed": 1.03,
+          "capture_seconds": 1.6
+        }
+      ]
+    },
+    {
+      "file": "bite2.wav",
+      "duration": null,
+      "events": [
+        {
+          "reference": "bite2.wav",
+          "score": 0.6685714285714286,
+          "speed": 1.01,
+          "capture_seconds": 1.9
+        }
+      ]
+    },
+    {
+      "file": "bite3.wav",
+      "duration": null,
+      "events": [
+        {
+          "reference": "bite2.wav",
+          "score": 0.5142857142857142,
+          "speed": 1.01,
+          "capture_seconds": 1.9
+        }
+      ]
+    },
+    {
+      "file": "bite4.wav",
+      "duration": null,
+      "events": [
+        {
+          "reference": "bite4.wav",
+          "score": 0.4607329842931937,
+          "speed": 1.04,
+          "capture_seconds": 1.9
+        }
+      ]
+    },
+    {
+      "file": "bite5.wav",
+      "duration": null,
+      "events": [
+        {
+          "reference": "bite1.wav",
+          "score": 0.5571428571428572,
+          "speed": 1.01,
+          "capture_seconds": 1.5
+        }
+      ]
+    },
+    {
+      "file": "bite6.wav",
+      "duration": null,
+      "events": [
+        {
+          "reference": "bite2.wav",
+          "score": 0.4114285714285714,
+          "speed": 0.99,
+          "capture_seconds": 1.9
+        }
+      ]
+    },
+    {
+      "file": "bite7.wav",
+      "duration": null,
+      "events": [
+        {
+          "reference": "bite4.wav",
+          "score": 0.6178010471204188,
+          "speed": 1.08,
+          "capture_seconds": 1.8
+        }
+      ]
+    },
+    {
+      "file": "bite8.wav",
+      "duration": null,
+      "events": [
+        {
+          "reference": "bite2.wav",
+          "score": 0.7142857142857143,
+          "speed": 1.06,
+          "capture_seconds": 1.8
+        }
+      ]
+    },
+    {
+      "file": "bite9.wav",
+      "duration": null,
+      "events": [
+        {
+          "reference": "bite1.wav",
+          "score": 0.4928571428571429,
+          "speed": 1.05,
+          "capture_seconds": 1.5
+        }
+      ]
+    },
+    {
+      "file": "bite10.wav",
+      "duration": null,
+      "events": [
+        {
+          "reference": "bite10.wav",
+          "score": 0.9870967741935484,
+          "speed": 1.01,
+          "capture_seconds": 1.7
+        }
+      ]
+    },
+    {
+      "file": "bite11.wav",
+      "duration": null,
+      "events": [
+        {
+          "reference": "bite10.wav",
+          "score": 0.4258064516129032,
+          "speed": 1.06,
+          "capture_seconds": 1.6
+        }
+      ]
+    },
+    {
+      "file": "bite12.wav",
+      "duration": null,
+      "events": [
+        {
+          "reference": "bite10.wav",
+          "score": 0.6903225806451613,
+          "speed": 1.04,
+          "capture_seconds": 1.6
+        }
+      ]
+    },
+    {
+      "file": "bite1.wav",
+      "duration": 1.0,
+      "events": [
+        {
+          "reference": "bite1.wav",
+          "score": 0.6593406593406593,
+          "speed": 0.99,
+          "capture_seconds": 1.1
+        }
+      ]
+    },
+    {
+      "file": "bite2.wav",
+      "duration": 1.0,
+      "events": [
+        {
+          "reference": "bite2.wav",
+          "score": 0.6521739130434783,
+          "speed": 1.0,
+          "capture_seconds": 1.0
+        }
+      ]
+    },
+    {
+      "file": "bite3.wav",
+      "duration": 1.0,
+      "events": [
+        {
+          "reference": "bite2.wav",
+          "score": 0.6521739130434783,
+          "speed": 0.98,
+          "capture_seconds": 1.0
+        }
+      ]
+    },
+    {
+      "file": "bite4.wav",
+      "duration": 1.0,
+      "events": [
+        {
+          "reference": "bite4.wav",
+          "score": 1.0,
+          "speed": 0.99,
+          "capture_seconds": 1.0
+        }
+      ]
+    },
+    {
+      "file": "bite5.wav",
+      "duration": 1.0,
+      "events": [
+        {
+          "reference": "bite1.wav",
+          "score": 0.6813186813186813,
+          "speed": 0.99,
+          "capture_seconds": 1.0
+        }
+      ]
+    },
+    {
+      "file": "bite6.wav",
+      "duration": 1.0,
+      "events": [
+        {
+          "reference": "bite2.wav",
+          "score": 0.5978260869565217,
+          "speed": 0.9600000000000001,
+          "capture_seconds": 1.0
+        }
+      ]
+    },
+    {
+      "file": "bite7.wav",
+      "duration": 1.0,
+      "events": [
+        {
+          "reference": "bite4.wav",
+          "score": 0.6931818181818182,
+          "speed": 1.08,
+          "capture_seconds": 0.9
+        }
+      ]
+    },
+    {
+      "file": "bite8.wav",
+      "duration": 1.0,
+      "events": [
+        {
+          "reference": "bite2.wav",
+          "score": 0.5543478260869565,
+          "speed": 1.08,
+          "capture_seconds": 0.9
+        }
+      ]
+    },
+    {
+      "file": "bite9.wav",
+      "duration": 1.0,
+      "events": [
+        {
+          "reference": "bite1.wav",
+          "score": 0.6593406593406593,
+          "speed": 1.0,
+          "capture_seconds": 1.0
+        }
+      ]
+    },
+    {
+      "file": "bite10.wav",
+      "duration": 1.0,
+      "events": [
+        {
+          "reference": "bite10.wav",
+          "score": 1.0,
+          "speed": 1.0,
+          "capture_seconds": 1.0
+        }
+      ]
+    },
+    {
+      "file": "bite11.wav",
+      "duration": 1.0,
+      "events": [
+        {
+          "reference": "bite10.wav",
+          "score": 0.5393258426966292,
+          "speed": 1.03,
+          "capture_seconds": 0.9
+        }
+      ]
+    },
+    {
+      "file": "bite12.wav",
+      "duration": 1.0,
+      "events": [
+        {
+          "reference": "bite10.wav",
+          "score": 0.6292134831460674,
+          "speed": 1.03,
+          "capture_seconds": 0.9
+        }
+      ]
+    }
+  ]
+}

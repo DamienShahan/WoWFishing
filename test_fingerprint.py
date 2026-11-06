@@ -5,13 +5,13 @@ import unittest
 import numpy as np
 from scipy import signal
 
-from fingerprint import FingerprintDetector, RATE, StreamDetector, read_audio
+from fingerprint import FingerprintDetector, RATE, StreamDetector, default_reference_paths, read_audio
 
 SOUNDS = Path(__file__).resolve().parent / "sounds"
 
 
 def sound_path(number):
-    folder = "target" if number in (1, 2, 4) else "validation"
+    folder = "target" if (SOUNDS / "target" / f"bite{number}.wav").exists() else "validation"
     return SOUNDS / folder / f"bite{number}.wav"
 
 
@@ -66,9 +66,10 @@ class FingerprintTests(unittest.TestCase):
             matches = detector.match(np.pad(read_audio(path), (3777, 8000)))
             self.assertTrue(any(m.name == path.name and detector.accepts(m) for m in matches))
 
-    def test_three_references_recognize_all_nine_with_noise(self):
-        detector = FingerprintDetector([sound_path(i) for i in (1, 2, 4)])
-        groups = {1: 1, 2: 2, 3: 2, 4: 4, 5: 1, 6: 2, 7: 4, 8: 2, 9: 1}
+    def test_four_references_recognize_all_twelve_with_noise(self):
+        detector = FingerprintDetector(default_reference_paths())
+        groups = {1: 1, 2: 2, 3: 2, 4: 4, 5: 1, 6: 2, 7: 4, 8: 2, 9: 1,
+                  10: 10, 11: 10, 12: 10}
         for number, representative in groups.items():
             audio = read_audio(sound_path(number))
             for noisy in (False, True):
@@ -81,8 +82,8 @@ class FingerprintTests(unittest.TestCase):
                     self.assertEqual(accepted[0].name, f"bite{representative}.wav")
 
     def test_all_reversed_recordings_are_rejected(self):
-        detector = FingerprintDetector([sound_path(i) for i in (1, 2, 4)])
-        for number in range(1, 10):
+        detector = FingerprintDetector(default_reference_paths())
+        for number in range(1, 13):
             with self.subTest(number=number):
                 audio = read_audio(sound_path(number))
                 self.assertFalse(any(detector.accepts(m) for m in

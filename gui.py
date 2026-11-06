@@ -385,8 +385,8 @@ def main():
     if args.self_check:
         import json
         import pyautogui
-        from fingerprint import FingerprintDetector, read_audio
-        paths = [Path(__file__).resolve().parent / "sounds" / "target" / f"bite{i}.wav" for i in (1, 2, 4)]
+        from fingerprint import FingerprintDetector, default_reference_paths, read_audio
+        paths = default_reference_paths()
         detector = FingerprintDetector(paths)
         checks = [any(detector.accepts(m) for m in detector.match(read_audio(path))) for path in paths]
         if not all(checks):

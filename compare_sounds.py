@@ -53,7 +53,7 @@ def main():
     paths = sorted(
         (path for folder in ("target", "validation")
          for path in (root/"sounds"/folder).glob("bite*.wav")),
-        key=lambda path: path.name,
+        key=lambda path: int(path.stem[4:]),
     )
     if len(paths) < 2:
         raise SystemExit("Need at least two bite WAV files")
@@ -100,7 +100,7 @@ def main():
             if left is not right:
                 left.update(right)
                 groups.remove(right)
-    groups = [sorted(group) for group in groups]
+    groups = [sorted(group, key=lambda name: int(Path(name).stem[4:])) for group in groups]
     report = {
         "method": "8 kHz mono, 250-3000 Hz bandpass; normalized correlation with lag and speed search",
         "speed_search_range": [0.88, 1.12],
@@ -111,7 +111,7 @@ def main():
     out = root/"reports"
     out.mkdir(exist_ok=True)
     (out/"sound_comparison.json").write_text(json.dumps(report, indent=2)+"\n", encoding="utf-8")
-    lines = ["# Bite sound comparison", "", "The nine recordings form three strongly supported groups." if len(paths) == 9 and len(groups) == 3 else "Groups based on verified recording similarity:", "",
+    lines = ["# Bite sound comparison", "", f"The {len(paths)} recordings form {len(groups)} strongly supported groups.", "",
              "| Group | Files |", "| --- | --- |"]
     lines += [f"| {i+1} | {', '.join(group)} |" for i, group in enumerate(groups)]
     lines += ["", "## Matching pairs after timing and speed adjustment", "",

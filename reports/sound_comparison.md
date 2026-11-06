@@ -1,12 +1,13 @@
 # Bite sound comparison
 
-The nine recordings form three strongly supported groups.
+The 12 recordings form 4 strongly supported groups.
 
 | Group | Files |
 | --- | --- |
 | 1 | bite1.wav, bite5.wav, bite9.wav |
 | 2 | bite2.wav, bite3.wav, bite6.wav, bite8.wav |
 | 3 | bite4.wav, bite7.wav |
+| 4 | bite10.wav, bite11.wav, bite12.wav |
 
 ## Matching pairs after timing and speed adjustment
 
@@ -24,6 +25,9 @@ Speed is the multiplier applied to file A to match file B (higher means faster a
 | bite4.wav | bite7.wav | +6.66% | 0.977 | 1.86 s |
 | bite5.wav | bite9.wav | +2.05% | 0.982 | 1.58 s |
 | bite6.wav | bite8.wav | +10.11% | 0.964 | 1.82 s |
+| bite10.wav | bite11.wav | +1.05% | 0.986 | 1.69 s |
+| bite10.wav | bite12.wav | +3.15% | 0.994 | 1.63 s |
+| bite11.wav | bite12.wav | +2.08% | 0.982 | 1.67 s |
 
 ## Interpretation
 

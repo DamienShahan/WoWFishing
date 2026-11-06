@@ -1,0 +1,110 @@
+{
+  "date": "2026-11-06",
+  "conclusion": "Bite 10, 11, 12 are gain/speed variants of a fourth distinct measured bite effect.",
+  "selected_target": "sounds/target/bite10.wav",
+  "selection_reason": "Bite 10 passed every candidate noise check and had the highest minimum score among the three candidate references. The existing +/-12% speed range covers both variants.",
+  "method": "48kHz PCM16 source inspection; 16kHz mono, 250-3000Hz bandpass; speed initialized by the 8kHz comparison, then speed and fractional timing refined by normalized correlation; least-squares scalar gain over aligned long overlap after DC removal.",
+  "limitations": "Gain is relative recorded amplitude in the analysis band, not a perceptual loudness or in-game volume measurement. Speed changes include proportional pitch changes. Residual recording/background/filter differences remain. Similarity is empirical, not proof of game asset identity; correlation is not a probability. Synthetic noise checks do not establish live gameplay accuracy.",
+  "files": [
+    {
+      "file": "bite10.wav",
+      "path": "sounds/target/bite10.wav",
+      "sha256": "76b776350594273116288ba4739c489243a643be68f48f078145b93efb5e380c",
+      "sample_rate": 48000,
+      "channels": 1,
+      "subtype": "PCM_16",
+      "duration_seconds": 1.7345208333333333,
+      "peak_dbfs": -11.083425117493494,
+      "rms_dbfs_central_99_percent_energy": -31.312512337384856,
+      "samples_at_or_above_09999": 0
+    },
+    {
+      "file": "bite11.wav",
+      "path": "sounds/validation/bite11.wav",
+      "sha256": "2aec5793fb37e01e3755cc95bec639e2a4ebe5d80742352bf99375d2cea4b172",
+      "sample_rate": 48000,
+      "channels": 1,
+      "subtype": "PCM_16",
+      "duration_seconds": 1.7204166666666667,
+      "peak_dbfs": -10.165142228053545,
+      "rms_dbfs_central_99_percent_energy": -30.20555316481909,
+      "samples_at_or_above_09999": 0
+    },
+    {
+      "file": "bite12.wav",
+      "path": "sounds/validation/bite12.wav",
+      "sha256": "88351b33c9cad2133d257f6ed71cfa7167534ed8f2c67de6bf5132ca26fea5f3",
+      "sample_rate": 48000,
+      "channels": 1,
+      "subtype": "PCM_16",
+      "duration_seconds": 1.6675833333333334,
+      "peak_dbfs": -2.030938749105564,
+      "rms_dbfs_central_99_percent_energy": -22.24367893706607,
+      "samples_at_or_above_09999": 0
+    }
+  ],
+  "pairs": [
+    {
+      "a": "bite10.wav",
+      "b": "bite11.wav",
+      "speed_multiplier_a_to_b": 1.010505415566534,
+      "speed_change_percent": 1.050541556653406,
+      "pitch_change_cents": 18.09246422847679,
+      "gain_multiplier_a_to_b": 1.1599205886699377,
+      "gain_change_db": 1.2885651451765132,
+      "correlation_after_alignment": 0.9997052375021187,
+      "variance_explained_by_gain_speed_timing": 0.9994105618891675,
+      "overlap_seconds": 1.6855625,
+      "optimizer_converged": true
+    },
+    {
+      "a": "bite10.wav",
+      "b": "bite12.wav",
+      "speed_multiplier_a_to_b": 1.031516612653674,
+      "speed_change_percent": 3.151661265367389,
+      "pitch_change_cents": 53.72046735012079,
+      "gain_multiplier_a_to_b": 2.89012120526726,
+      "gain_change_db": 9.21832112969813,
+      "correlation_after_alignment": 0.9996696607785421,
+      "variance_explained_by_gain_speed_timing": 0.9993394306810855,
+      "overlap_seconds": 1.6335,
+      "optimizer_converged": true
+    },
+    {
+      "a": "bite11.wav",
+      "b": "bite12.wav",
+      "speed_multiplier_a_to_b": 1.0207927909268109,
+      "speed_change_percent": 2.0792790926810856,
+      "pitch_change_cents": 35.62805472911766,
+      "gain_multiplier_a_to_b": 2.5517842743806582,
+      "gain_change_db": 8.136879134476668,
+      "correlation_after_alignment": 0.9997216302357742,
+      "variance_explained_by_gain_speed_timing": 0.999443337961274,
+      "overlap_seconds": 1.667375,
+      "optimizer_converged": true
+    }
+  ],
+  "candidate_noise_validation": [
+    {
+      "candidate": "bite10.wav",
+      "passed": 24,
+      "total": 24,
+      "minimum_score": 0.4129032258064516,
+      "median_score": 0.46451612903225803
+    },
+    {
+      "candidate": "bite11.wav",
+      "passed": 23,
+      "total": 24,
+      "minimum_score": 0.38562091503267976,
+      "median_score": 0.4738562091503268
+    },
+    {
+      "candidate": "bite12.wav",
+      "passed": 24,
+      "total": 24,
+      "minimum_score": 0.40816326530612246,
+      "median_score": 0.48299319727891155
+    }
+  ]
+}

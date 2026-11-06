@@ -13,6 +13,12 @@ WINDOW = 512
 HOP = 160  # 10 ms
 
 
+def default_reference_paths():
+    """One measured representative per distinct bite sound group."""
+    folder = Path(__file__).resolve().parent / "sounds" / "target"
+    return [folder / f"bite{number}.wav" for number in (1, 2, 4, 10)]
+
+
 def mono_resample(audio, rate):
     audio = np.asarray(audio, dtype=np.float64)
     if audio.ndim == 2:

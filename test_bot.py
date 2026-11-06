@@ -91,6 +91,8 @@ class BotTests(unittest.TestCase):
             return bot.cancelled()
         bot.wait = wait
         bot.run()
+        self.assertEqual([path.name for path in bot.detector_factory.call_args.args[0]],
+                         ["bite1.wav", "bite2.wav", "bite4.wav", "bite10.wav"])
         self.assertEqual(self.keys, ["k"] * 4)
         self.assertEqual((bot.casts, bot.bites), (2, 2))
         self.assertEqual(self.backend.captures, 2)
