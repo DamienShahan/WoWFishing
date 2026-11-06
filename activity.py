@@ -15,7 +15,7 @@ STYLES = {
     "cast": ("#81c8fa", "#263b50"),
     "bite": ("#73d9b1", "#233c37"),
     "lure": ("#c6a5f7", "#3a304b"),
-    "wait": ("#e5bf7b", "#443b2d"),
+    "wait": ("#b8bac4", "#34343f"),
     "timeout": ("#e5bf7b", "#443b2d"),
     "error": ("#ff9aa9", "#4a2c3a"),
     "warning": ("#e5bf7b", "#443b2d"),

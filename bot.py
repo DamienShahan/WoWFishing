@@ -110,8 +110,8 @@ class BotSession:
                     wait_key = "WAIT_AFTER_TARGET_FOUND" if found else "WAIT_AFTER_NOT_FOUND"
                     seconds = random.uniform(*cfg[wait_key])
                     self.emit("state", "Waiting")
-                    self.log(f"⌛ Next cast in {seconds:.1f}s.", kind="wait", title="Taking a short pause",
-                             body=f"The next cast starts in about {seconds:.1f} seconds.")
+                    self.log(f"⌛ Next cast in {seconds:.1f}s.", kind="wait", title="Short pause before next cast",
+                             body=f"The next cast starts in {seconds:.1f} seconds.")
                     if self.wait(seconds):
                         break
         except InterruptedError:

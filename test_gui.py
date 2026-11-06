@@ -65,6 +65,24 @@ class GuiTests(unittest.TestCase):
         self.assertEqual(load(self.path)["ACTION_KEY"], "f2")
         self.assertEqual(self.app.settings["ACTION_KEY"], "f2")
 
+    def test_umlaut_keybindings_are_saved_and_reopened(self):
+        for action, lure in (("ä", "Ö"), ("ö", "Ü"), ("ü", "Ä")):
+            with self.subTest(action=action, lure=lure):
+                self.app.open_settings()
+                dialog = self.app.dialog
+                for name, key in (("ACTION_KEY", action), ("LURE_KEY", lure)):
+                    entry = dialog.entries[name][0]
+                    entry.delete(0, "end")
+                    entry.insert(0, key)
+                dialog.commit()
+                self.assertEqual(load(self.path)["ACTION_KEY"], action)
+                self.assertEqual(load(self.path)["LURE_KEY"], lure.lower())
+                self.app.open_settings()
+                dialog = self.app.dialog
+                self.assertEqual(dialog.entries["ACTION_KEY"][0].get(), action)
+                self.assertEqual(dialog.entries["LURE_KEY"][0].get(), lure.lower())
+                dialog.destroy()
+
     def test_stop_button_waits_for_worker_then_can_restart(self):
         sessions = []
 
