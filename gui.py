@@ -331,7 +331,7 @@ class SettingsDialog(ctk.CTkToplevel):
         fields = [
             ("ACTION_KEY", "Action key", "Casts and reels in using the same key."),
             ("LURE_KEY", "Lure key", "Bind this to your in-game lure macro."),
-            ("WAIT_AFTER_TARGET_FOUND", "After a bite (seconds)", "Minimum and maximum wait before recasting."),
+            ("WAIT_AFTER_TARGET_FOUND", "Wait after a catch (seconds)", "Minimum and maximum pause after reeling in, before recasting."),
             ("WAIT_AFTER_NOT_FOUND", "After timeout (seconds)", "Minimum and maximum wait before retrying."),
             ("LURE_WAIT_TIME", "Lure cast wait (seconds)", "Allow the lure cast to finish before fishing."),
             ("LURE_COOLDOWN_SECONDS", "Lure interval (seconds)", "Reapply at the next cycle after this interval."),
